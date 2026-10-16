@@ -684,7 +684,7 @@
       <div class="form-card" style="margin-bottom:18px">
         <h3>기본 정보</h3>
         <div class="dg-row">
-          <div class="field"><label>담당자 성함/직급 <span class="opt">(선택)</span></label><input id="cs_person" placeholder="예: 김수지 대표 (비워두면 [성함/직급]님으로 생성)"></div>
+          <div class="field"><label>담당자 성함/직급 <span class="opt">(선택)</span></label><input id="cs_person" placeholder="예: 홍길동 대표 (비워두면 [성함/직급]님으로 생성)"></div>
           <div class="field"><label>작성자(발신자)</label>
             <select id="cs_sender">
               <option value="오은비">오은비 매니저 · 메이크샵PRO팀</option>
@@ -1797,6 +1797,9 @@ function csClassify(text){
   const responsiveKw = /반응형/.test(t);
   const budgetStated = /\d[\d,]*\s*(만\s*원|원)/.test(t);
   const detailAttachedKw = /첨부|엑셀파일|요청서|참고\s*부탁/.test(t);
+  // 부분 커스텀은 '현재 사용 중인 스킨'에서 일부를 고치는 작업이 대부분이라, 스킨을 새로 선택/전환하겠다는
+  // 말이 없으면 스킨명을 묻지 않습니다. 고객이 스킨 자체를 바꾸려는 경우에만 확인이 필요합니다.
+  const skinChangeKw = /스킨.{0,6}(변경|교체|전환)|템플릿.{0,6}(변경|교체)|다른\s*스킨|새\s*스킨/.test(t);
   // PC/모바일을 둘 다 명시한 경우에만 생략하고, 그 외(한쪽만 언급 또는 언급 없음)는 기본적으로 확인 질문을 넣습니다.
   const pcMentioned = /\bPC\b|피씨|컴퓨터\s*화면/i.test(t);
   const mobileMentioned = /모바일|핸드폰\s*화면|스마트폰\s*화면/.test(t);
@@ -1820,6 +1823,7 @@ function csClassify(text){
     migSource: migHit || "",
     migDetected: migKw,
     deviceBothStated,
+    skinChangeKw,
   };
 }
 // (참고: 구축 소요기간 안내는 디자인 상담과 무관하여 이 분류기에서 다루지 않습니다.)
@@ -1831,7 +1835,10 @@ function csApplyClassification(c){
   // 요청서/첨부파일을 이미 상세히 주신 경우, 스킨명·범위 재질문은 기본적으로 생략합니다.
   // (실제로 다 적혀 있는지는 사람이 파일을 봐야 알 수 있으므로, 체크박스는 그대로 두고 기본값만 조정합니다.)
   const detailGiven = c.detailAttachedKw;
-  document.getElementById("cs_chkSkin").checked = (c.type==="partial" || c.type==="basic_renewal") && !detailGiven;
+  // '현재 사용 중인 스킨'에서 일부만 고치는 작업이 대부분이라, 스킨을 새로 선택/전환하겠다는
+  // 언급이 없으면 스킨명을 묻지 않습니다. 기본 셋팅 리뉴얼(스킨을 고르는 작업 자체)이거나,
+  // 스킨 변경/전환 의사가 감지된 경우에만 기본 체크합니다.
+  document.getElementById("cs_chkSkin").checked = !detailGiven && (c.type==="basic_renewal" || c.skinChangeKw);
   document.getElementById("cs_chkResponsive").checked = (c.type==="basic_renewal");
   document.getElementById("cs_chkBudget").checked = !c.budgetStated;
   document.getElementById("cs_chkDevice").checked = !c.deviceBothStated;
@@ -1853,7 +1860,9 @@ function csApplyClassification(c){
 document.querySelectorAll('input[name="csType"]').forEach(r=>{
   r.addEventListener("change", ()=>{
     const type = r.value;
-    document.getElementById("cs_chkSkin").checked = (type==="partial" || type==="basic_renewal");
+    // 기본 셋팅 리뉴얼은 스킨을 고르는 작업 자체라 기본 체크, 부분 커스텀은 스킨 전환 언급이 있을 때만 체크됩니다
+    // (여기서는 수동 전환이라 보수적으로 기본 셋팅 리뉴얼만 자동 체크).
+    document.getElementById("cs_chkSkin").checked = (type==="basic_renewal");
     document.getElementById("cs_chkResponsive").checked = (type==="basic_renewal");
   });
 });
@@ -1904,7 +1913,11 @@ function csBuildBody(){
     );
   }
   if(document.getElementById("cs_chkSkin").checked){
-    blocks.push("작업 기준이 되는 스킨명을 확인 부탁드리며, 보관 중인 스킨이 여러 개인 경우 어떤 스킨을 기준으로 작업할지 함께 알려주시기 바랍니다.\n(확인 경로: [디자인 > 디자인 스킨 관리 > 디자인 스킨 추가])");
+    if(type==="partial"){
+      blocks.push("현재 사용 중이신 스킨에서 작업 진행하는 방향으로 확인 부탁드리며, 별도로 전환하실 스킨이 있는 경우 스킨명을 알려주시기 바랍니다.");
+    } else {
+      blocks.push("작업 기준이 되는 스킨명을 확인 부탁드리며, 보관 중인 스킨이 여러 개인 경우 어떤 스킨을 기준으로 작업할지 함께 알려주시기 바랍니다.\n(확인 경로: [디자인 > 디자인 스킨 관리 > 디자인 스킨 추가])");
+    }
   }
   if(document.getElementById("cs_chkDevice").checked){
     blocks.push("PC 화면만 작업 희망이신지, 모바일 화면도 함께 작업 희망이신지 확인 부탁드립니다.");
