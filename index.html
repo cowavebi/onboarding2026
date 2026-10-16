@@ -686,10 +686,7 @@
         <div class="dg-row">
           <div class="field"><label>담당자 성함/직급 <span class="opt">(선택)</span></label><input id="cs_person" placeholder="예: 홍길동 대표 (비워두면 [성함/직급]님으로 생성)"></div>
           <div class="field"><label>작성자(발신자)</label>
-            <select id="cs_sender">
-              <option value="오은비">오은비 매니저 · 메이크샵PRO팀</option>
-              <option value="이선아">이선아 매니저 · 메이크샵PRO팀</option>
-            </select>
+            <input id="cs_sender" placeholder="예: 오은비 매니저 / 메이크샵 온보딩팀" value="오은비 매니저 / 메이크샵 온보딩팀">
           </div>
         </div>
       </div>
@@ -698,7 +695,7 @@
         <h3>작업 성격</h3>
         <p class="hint">문의 내용을 분석해 가장 가까운 유형을 자동으로 선택해 둡니다. 판단이 다르다고 생각되면 직접 선택해 주세요.</p>
         <div class="radio-list">
-          <label class="radio-opt"><input type="radio" name="csType" value="basic_renewal" checked> <span><b>기본 셋팅 리뉴얼</b> — 무료 스킨 기반으로 전체 틀을 새로 잡는 작업 (반응형 스킨 선제안 포함)</span></label>
+          <label class="radio-opt"><input type="radio" name="csType" value="basic_renewal" checked> <span><b>기본 셋팅 리뉴얼</b> — 무료 스킨 기반으로 전체 틀을 새로 잡는 작업</span></label>
           <label class="radio-opt"><input type="radio" name="csType" value="partial"> <span><b>부분 커스텀 수정</b> — 기존 스킨의 일부 영역만 수정</span></label>
           <label class="radio-opt"><input type="radio" name="csType" value="brand"> <span><b>브랜딩 전체 제작</b> — 템플릿 틀을 벗어난 1:1 맞춤 제작</span></label>
           <label class="radio-opt"><input type="radio" name="csType" value="unclear"> <span><b>판단 보류</b> — 두 방향을 모두 안내하고 고객에게 선택을 요청</span></label>
@@ -711,16 +708,11 @@
         <div class="chk-list">
           <label class="chk-opt"><input type="checkbox" id="cs_chkDevice"> PC/모바일 작업 범위 확인 (구조가 바뀌는 작업일수록 중요)</label>
           <label class="chk-opt"><input type="checkbox" id="cs_chkSkin"> 기준 스킨명 확인 (보관 스킨이 여러 개인 경우 포함)</label>
-          <label class="chk-opt"><input type="checkbox" id="cs_chkRef"> 레퍼런스 참고 범위 확인 (전체 참고 vs 일부만 참고)</label>
+          <label class="chk-opt"><input type="checkbox" id="cs_chkRef"> 참고자료 확인 (전체 리뉴얼: 레퍼런스·기획서 / 부분 커스텀: 수정 영역·페이지)</label>
           <label class="chk-opt"><input type="checkbox" id="cs_chkBudget"> 예산 확인</label>
-          <label class="chk-opt"><input type="checkbox" id="cs_chkResponsive"> 반응형 스킨 선제안 (+ 버전 확인 안내)</label>
-          <label class="chk-opt"><input type="checkbox" id="cs_chkMigration"> 기존 몰 데이터 이전 안내 포함</label>
         </div>
         <div class="field field-sub" id="cs_refWrap" style="display:none">
           <label>감지된 레퍼런스 링크</label><input id="cs_refUrl" placeholder="https://...">
-        </div>
-        <div class="field field-sub" id="cs_migWrap" style="display:none">
-          <label>감지된 기존 운영 채널</label><input id="cs_migSource" placeholder="예: 스마트스토어, 카페24">
         </div>
       </div>
 
@@ -1794,7 +1786,6 @@ function csClassify(text){
   // '전체'/'올'이 붙었거나 신규 구축을 가리키는 표현일 때만 전체 리뉴얼로 판단합니다.
   const renewalKw = /전체\s*리뉴얼|올\s*리뉴얼|새로\s*(구축|제작|만들)|신규\s*구축|기틀/.test(t);
   const basicSkinKw = /스킨\s*기반|기본\s*(셋팅|세팅)|무료\s*스킨/.test(t);
-  const responsiveKw = /반응형/.test(t);
   const budgetStated = /\d[\d,]*\s*(만\s*원|원)/.test(t);
   const detailAttachedKw = /첨부|엑셀파일|요청서|참고\s*부탁/.test(t);
   // 부분 커스텀은 '현재 사용 중인 스킨'에서 일부를 고치는 작업이 대부분이라, 스킨을 새로 선택/전환하겠다는
@@ -1804,9 +1795,6 @@ function csClassify(text){
   const pcMentioned = /\bPC\b|피씨|컴퓨터\s*화면/i.test(t);
   const mobileMentioned = /모바일|핸드폰\s*화면|스마트폰\s*화면/.test(t);
   const deviceBothStated = pcMentioned && mobileMentioned;
-  const migPlatforms = ["스마트스토어","카페24","고도몰","넥스트몰","샵바이","식스샵"];
-  const migHit = migPlatforms.find(p=>t.includes(p));
-  const migKw = !!migHit || /기존\s*(몰|사이트).{0,12}(이전|옮기)/.test(t);
 
   let type;
   if(customBrandKw) type="brand";
@@ -1819,9 +1807,6 @@ function csClassify(text){
     url: urlMatch ? urlMatch[0] : "",
     budgetStated,
     detailAttachedKw,
-    responsiveKw,
-    migSource: migHit || "",
-    migDetected: migKw,
     deviceBothStated,
     skinChangeKw,
   };
@@ -1839,21 +1824,16 @@ function csApplyClassification(c){
   // 언급이 없으면 스킨명을 묻지 않습니다. 기본 셋팅 리뉴얼(스킨을 고르는 작업 자체)이거나,
   // 스킨 변경/전환 의사가 감지된 경우에만 기본 체크합니다.
   document.getElementById("cs_chkSkin").checked = !detailGiven && (c.type==="basic_renewal" || c.skinChangeKw);
-  document.getElementById("cs_chkResponsive").checked = (c.type==="basic_renewal");
   document.getElementById("cs_chkBudget").checked = !c.budgetStated;
   document.getElementById("cs_chkDevice").checked = !c.deviceBothStated;
 
   const refChk = document.getElementById("cs_chkRef");
   const refWrap = document.getElementById("cs_refWrap");
   const refUrl = document.getElementById("cs_refUrl");
-  refChk.checked = !!c.url && !detailGiven;
+  // 큰 틀: 전체 리뉴얼류는 참고사이트/기획서 "여부"를 확인하는 선택적 질문이라 URL이 감지됐을 때만 기본 체크하고,
+  // 부분 커스텀은 detail(요청서)이 이미 없으면 항상 "수정 원하는 영역·페이지" 확인이 필요합니다.
+  refChk.checked = c.type==="partial" ? !detailGiven : (!!c.url && !detailGiven);
   if(c.url){ refUrl.value = c.url; refWrap.style.display="block"; } else { refWrap.style.display="none"; }
-
-  const migChk = document.getElementById("cs_chkMigration");
-  const migWrap = document.getElementById("cs_migWrap");
-  const migSource = document.getElementById("cs_migSource");
-  migChk.checked = c.migDetected;
-  if(c.migDetected){ migSource.value = c.migSource || "타 플랫폼"; migWrap.style.display="block"; } else { migWrap.style.display="none"; }
 }
 
 // 작업 성격을 사람이 직접 바꾸면 반응형/스킨확인 체크를 그 유형의 기본값으로 다시 맞춰줍니다.
@@ -1863,14 +1843,10 @@ document.querySelectorAll('input[name="csType"]').forEach(r=>{
     // 기본 셋팅 리뉴얼은 스킨을 고르는 작업 자체라 기본 체크, 부분 커스텀은 스킨 전환 언급이 있을 때만 체크됩니다
     // (여기서는 수동 전환이라 보수적으로 기본 셋팅 리뉴얼만 자동 체크).
     document.getElementById("cs_chkSkin").checked = (type==="basic_renewal");
-    document.getElementById("cs_chkResponsive").checked = (type==="basic_renewal");
   });
 });
 document.getElementById("cs_chkRef").addEventListener("change", (e)=>{
   document.getElementById("cs_refWrap").style.display = e.target.checked ? "block" : "none";
-});
-document.getElementById("cs_chkMigration").addEventListener("change", (e)=>{
-  document.getElementById("cs_migWrap").style.display = e.target.checked ? "block" : "none";
 });
 
 let csLast = null;
@@ -1896,7 +1872,7 @@ const CS_TYPE_BLOCK = {
 
 function csBuildBody(){
   const type = csType();
-  const hasQuestions = ["cs_chkSkin","cs_chkDevice","cs_chkRef","cs_chkBudget","cs_chkMigration"]
+  const hasQuestions = ["cs_chkSkin","cs_chkDevice","cs_chkRef","cs_chkBudget"]
     .some(id => document.getElementById(id).checked);
 
   const blocks = [];
@@ -1905,13 +1881,6 @@ function csBuildBody(){
   }
   blocks.push(CS_TYPE_BLOCK[type]);
 
-  if(document.getElementById("cs_chkResponsive").checked){
-    blocks.push(
-      "메이크샵에서는 반응형 스킨을 무료로 제공해드리고 있습니다. 모바일 화면도 별도 작업 없이 자동으로 대응되는 반응형 스킨 기준으로 작업하시는 것을 추천드립니다.\n"+
-      "다만 반응형 스킨은 \"주문2.0 / 디자인D4 / 통합옵션\" 버전에서만 사용 가능하여, 현재 귀사 버전 확인이 필요합니다. 구버전(주문1.0/D2 등)이신 경우, 업그레이드 전에 반응형 스킨을 먼저 선택해 수정 요구사항을 반영해두시면 업그레이드 즉시 적용하여 운영하실 수 있습니다.\n"+
-      "관리자페이지 [디자인 > 디자인 스킨 관리 > 디자인 스킨 추가] 메뉴에서 \"구분 > 반응형\"으로 스킨을 조회하실 수 있습니다."
-    );
-  }
   if(document.getElementById("cs_chkSkin").checked){
     if(type==="partial"){
       blocks.push("현재 사용 중이신 스킨에서 작업 진행하는 방향으로 확인 부탁드리며, 별도로 전환하실 스킨이 있는 경우 스킨명을 알려주시기 바랍니다.");
@@ -1924,18 +1893,24 @@ function csBuildBody(){
   }
   if(document.getElementById("cs_chkRef").checked){
     const url = document.getElementById("cs_refUrl").value.trim();
-    if(url){
-      blocks.push(`전달해주신 ${url} 사이트를 전체적으로 참고하여 구축 원하시는 게 맞으실까요, 아니면 특정 영역만 참고 원하시는 걸까요?\n참고하시는 각 구성/페이지가 문구로만 노출되길 원하시는지, 이미지 추가를 희망하시는지도 함께 알려주시면 검토에 도움이 됩니다.`);
+    // 큰 틀: 전체 리뉴얼은 "참고사이트/기획서/요구사항 정의서 여부"를, 부분 커스텀은
+    // "수정 원하는 영역·페이지 등 구체적인 내용"을 확인하는 것으로 구분합니다.
+    if(type==="partial"){
+      if(url){
+        blocks.push(`전달해주신 ${url} 사이트를 참고하여, 수정 원하시는 영역이나 페이지 등 구체적인 내용을 전달 부탁드립니다.`);
+      } else {
+        blocks.push("수정 원하시는 영역이나 페이지 등 구체적인 내용을 전달 부탁드립니다.");
+      }
     } else {
-      blocks.push("참고하고 계신 사이트나 이미지 자료가 있다면 함께 전달 부탁드립니다. 전체적으로 참고하시는 것인지, 특정 영역만 참고하시는 것인지도 알려주시면 검토에 도움이 됩니다.");
+      if(url){
+        blocks.push(`전달해주신 ${url} 사이트를 전체적으로 참고하여 구축 원하시는 게 맞으실까요, 아니면 특정 영역만 참고 원하시는 걸까요?\n참고하시는 각 구성/페이지가 문구로만 노출되길 원하시는지, 이미지 추가를 희망하시는지도 함께 알려주시면 검토에 도움이 됩니다.`);
+      } else {
+        blocks.push("참고하고 계신 사이트가 있다면 전달 부탁드리며, 별도로 정리하신 기획서나 요구사항 정의서가 있다면 함께 전달 부탁드립니다. 문서로 정리하기 어려우시면 간단한 설명만 주셔도 검토 가능합니다.");
+      }
     }
   }
   if(document.getElementById("cs_chkBudget").checked){
     blocks.push("작업 비용은 요청 범위, 난이도, 시안 제작 여부 등에 따라 상이합니다. 계획하신 예산이 있으시면 말씀해주시면 작업 범위 검토 시 참고하도록 하겠습니다.");
-  }
-  if(document.getElementById("cs_chkMigration").checked){
-    const src = document.getElementById("cs_migSource").value.trim() || "타 플랫폼";
-    blocks.push(`기존에 운영 중이신 ${src}의 데이터를 메이크샵으로 이전하시는 부분도 필요하신 경우, 상품/리뷰 데이터는 1회 무상 이전 지원이 가능합니다. 이전을 원하시면 관리자 계정 정보 또는 상품/리뷰 엑셀 데이터를 전달 부탁드립니다.\n다만 타 플랫폼에서 제공하는 데이터 범위에 따라 이전 가능한 세부 항목에 제한이 있을 수 있는 점 참고 부탁드립니다.`);
   }
   // 디자인 상담은 구축(이관+디자인+PG+도메인) 전체 일정과 무관하므로, 전체 구축 소요기간(약 4주) 안내는
   // 이 탭에서 다루지 않습니다. 대신 디자인 작업 자체의 견적·공수 안내만 포함합니다.
@@ -1949,8 +1924,12 @@ function csBuildBody(){
 
 let csCur = {subj:"", body:""};
 function csRender(){
-  const sender = document.getElementById("cs_sender").value;
-  const email = CS_SENDER_EMAIL[sender] || CS_SENDER_EMAIL["오은비"];
+  // 작성자 입력란은 "오은비 매니저 / 메이크샵 온보딩팀"처럼 성함·직급·팀을 한 줄로 직접 입력받습니다.
+  // 인사말/서명에 쓸 성함만 앞 단어로 뽑아 쓰고, 이메일은 알려진 이름(오은비/이선아)일 때만 자동 매칭합니다.
+  const senderRaw = document.getElementById("cs_sender").value.trim() || "오은비 매니저 / 메이크샵 온보딩팀";
+  const senderName = (senderRaw.match(/^[가-힣]+/) || [senderRaw.split(/\s+/)[0]])[0];
+  const emailKey = Object.keys(CS_SENDER_EMAIL).find(k => senderName.includes(k));
+  const email = CS_SENDER_EMAIL[emailKey] || CS_SENDER_EMAIL["오은비"];
   const quote = document.getElementById("cs_quote").value.trim() || "[고객 문의 원문을 입력해 주세요]";
   const subj = "[메이크샵PRO] 쇼핑몰 디자인 문의 접수 관련 안내드립니다.";
   // 요청서가 문의와 "함께" 접수된 것이지, 문의 접수 후 별도로 전달받은 것이 아니므로
@@ -1960,7 +1939,7 @@ function csRender(){
     : "PRO 상담접수 게시판을 통해 문의접수 주신 것 확인하여 안내 차 연락드렸습니다.";
   const body =
 `안녕하세요, ${csPersonLabel()}
-메이크샵PRO팀 ${sender}입니다.
+메이크샵PRO팀 ${senderName}입니다.
 
 메이크샵을 이용해주셔서 감사합니다 :)
 ${receiptLine}
@@ -1981,11 +1960,10 @@ ${csBuildBody()}
 추가 궁금하신 점은 본 메일로 회신 부탁 드립니다.
 감사합니다:)
 
-${sender}드림
+${senderName}드림
 
 
-${sender} 매니저
-메이크샵 / 메이크샵PRO팀
+${senderRaw}
 서울시 금천구 가산디지털1로 168 우림라이온스밸리A동 1401호 ~ 1408호
 Email ${email}`;
   csCur = {subj, body};
