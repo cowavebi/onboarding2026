@@ -1890,11 +1890,17 @@ const CS_TYPE_BLOCK = {
 
 function csBuildBody(){
   const type = csType();
-  let typeBlock = CS_TYPE_BLOCK[type];
-  if(csLast && csLast.detailAttachedKw){
-    typeBlock = "전달해주신 요청서(자료) 확인하였습니다. 꼼꼼하게 정리해 주셔서 검토에 큰 도움이 되었습니다.\n"+typeBlock;
+  const hasQuestions = ["cs_chkSkin","cs_chkDevice","cs_chkRef","cs_chkBudget","cs_chkMigration"]
+    .some(id => document.getElementById(id).checked);
+
+  const blocks = [];
+  if(hasQuestions){
+    blocks.push("문의하신 내용 확인하였으며, 아래 추가 확인이 필요한 부분이 있어 안내 드립니다.");
   }
-  const blocks = [typeBlock];
+  if(csLast && csLast.detailAttachedKw){
+    blocks.push("전달해주신 요청서(자료) 꼼꼼하게 정리해 주셔서 검토에 큰 도움이 되었습니다.");
+  }
+  blocks.push(CS_TYPE_BLOCK[type]);
 
   if(document.getElementById("cs_chkResponsive").checked){
     blocks.push(
