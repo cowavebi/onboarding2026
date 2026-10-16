@@ -725,7 +725,7 @@
         <div class="out-card">
           <h3>생성된 1차 안내 메일</h3>
           <p class="hint">제목과 본문이 함께 생성됩니다. 발송 전 대괄호 부분과 자동 판단 내용을 꼭 확인하세요.</p>
-          <div class="mail-box" id="csMailOut"></div>
+          <div class="mail-box" id="csMailOut" style="color:var(--gray)">왼쪽에 고객 문의와 정보를 입력한 뒤, 아래 [답변 메일 생성] 버튼을 클릭해주세요.</div>
           <div class="out-actions">
             <button class="btn" id="csBuildBtn" type="button">답변 메일 생성</button>
             <button class="btn ghost" id="csCopyBtn" type="button">본문 복사</button>
@@ -1824,7 +1824,8 @@ function csApplyClassification(c){
   // 언급이 없으면 스킨명을 묻지 않습니다. 기본 셋팅 리뉴얼(스킨을 고르는 작업 자체)이거나,
   // 스킨 변경/전환 의사가 감지된 경우에만 기본 체크합니다.
   document.getElementById("cs_chkSkin").checked = !detailGiven && (c.type==="basic_renewal" || c.skinChangeKw);
-  document.getElementById("cs_chkBudget").checked = !c.budgetStated;
+  // 브랜딩 전체 제작(= 맞춤디자인)은 참고 레퍼런스·예산 확인이 필수라 감지 여부와 무관하게 항상 체크합니다.
+  document.getElementById("cs_chkBudget").checked = c.type==="brand" ? true : !c.budgetStated;
   document.getElementById("cs_chkDevice").checked = !c.deviceBothStated;
 
   const refChk = document.getElementById("cs_chkRef");
@@ -1832,17 +1833,24 @@ function csApplyClassification(c){
   const refUrl = document.getElementById("cs_refUrl");
   // 큰 틀: 전체 리뉴얼류는 참고사이트/기획서 "여부"를 확인하는 선택적 질문이라 URL이 감지됐을 때만 기본 체크하고,
   // 부분 커스텀은 detail(요청서)이 이미 없으면 항상 "수정 원하는 영역·페이지" 확인이 필요합니다.
-  refChk.checked = c.type==="partial" ? !detailGiven : (!!c.url && !detailGiven);
-  if(c.url){ refUrl.value = c.url; refWrap.style.display="block"; } else { refWrap.style.display="none"; }
+  // 브랜딩(맞춤디자인)은 레퍼런스 확인이 필수이므로 항상 체크합니다.
+  refChk.checked = c.type==="brand" ? true : (c.type==="partial" ? !detailGiven : (!!c.url && !detailGiven));
+  if(c.url){ refUrl.value = c.url; refWrap.style.display="block"; } else { refWrap.style.display = refChk.checked ? "block" : "none"; }
 }
 
-// 작업 성격을 사람이 직접 바꾸면 반응형/스킨확인 체크를 그 유형의 기본값으로 다시 맞춰줍니다.
+// 작업 성격을 사람이 직접 바꾸면 스킨확인·레퍼런스·예산 체크를 그 유형의 기본값으로 다시 맞춰줍니다.
 document.querySelectorAll('input[name="csType"]').forEach(r=>{
   r.addEventListener("change", ()=>{
     const type = r.value;
     // 기본 셋팅 리뉴얼은 스킨을 고르는 작업 자체라 기본 체크, 부분 커스텀은 스킨 전환 언급이 있을 때만 체크됩니다
     // (여기서는 수동 전환이라 보수적으로 기본 셋팅 리뉴얼만 자동 체크).
     document.getElementById("cs_chkSkin").checked = (type==="basic_renewal");
+    // 브랜딩(맞춤디자인)으로 직접 전환한 경우 레퍼런스·예산 확인을 항상 켜줍니다.
+    if(type==="brand"){
+      document.getElementById("cs_chkRef").checked = true;
+      document.getElementById("cs_chkBudget").checked = true;
+      document.getElementById("cs_refWrap").style.display = "block";
+    }
   });
 });
 document.getElementById("cs_chkRef").addEventListener("change", (e)=>{
@@ -1973,7 +1981,8 @@ document.getElementById("csBuildBtn").addEventListener("click", csRender);
 function csFlash(){ const m=document.getElementById("csCopiedMsg"); m.classList.add("show"); setTimeout(()=>m.classList.remove("show"),1400); }
 document.getElementById("csCopyBtn").addEventListener("click", ()=>navigator.clipboard.writeText(csCur.body).then(csFlash));
 document.getElementById("csCopySubjBtn").addEventListener("click", ()=>navigator.clipboard.writeText(csCur.subj).then(csFlash));
-csRender();
+// 페이지 로드 시 바로 기본값으로 메일을 생성하면 실제 문의 내용 없이도 완성된 메일처럼 보여
+// 혼동을 줄 수 있어, 버튼을 클릭하기 전까지는 안내 문구만 표시합니다.
 
 
 /* ================= 프로젝트 현황 ================= */
