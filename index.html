@@ -1897,9 +1897,6 @@ function csBuildBody(){
   if(hasQuestions){
     blocks.push("문의하신 내용 확인하였으며, 아래 추가 확인이 필요한 부분이 있어 안내 드립니다.");
   }
-  if(csLast && csLast.detailAttachedKw){
-    blocks.push("전달해주신 요청서(자료) 확인하였습니다.");
-  }
   blocks.push(CS_TYPE_BLOCK[type]);
 
   if(document.getElementById("cs_chkResponsive").checked){
@@ -1948,12 +1945,17 @@ function csRender(){
   const email = CS_SENDER_EMAIL[sender] || CS_SENDER_EMAIL["오은비"];
   const quote = document.getElementById("cs_quote").value.trim() || "[고객 문의 원문을 입력해 주세요]";
   const subj = "[메이크샵PRO] 쇼핑몰 디자인 문의 접수 관련 안내드립니다.";
+  // 요청서가 문의와 "함께" 접수된 것이지, 문의 접수 후 별도로 전달받은 것이 아니므로
+  // 두 문장으로 쪼개지 않고 한 문장으로 안내합니다.
+  const receiptLine = (csLast && csLast.detailAttachedKw)
+    ? "PRO 상담접수 게시판을 통해 요청서(자료)와 함께 문의 접수 주신 것 확인하였습니다."
+    : "PRO 상담접수 게시판을 통해 문의접수 주신 것 확인하여 안내 차 연락드렸습니다.";
   const body =
 `안녕하세요, ${csPersonLabel()}
 메이크샵PRO팀 ${sender}입니다.
 
 메이크샵을 이용해주셔서 감사합니다 :)
-PRO 상담접수 게시판을 통해 문의접수 주신 것 확인하여 안내 차 연락드렸습니다.
+${receiptLine}
 관련하여 아래 안내드리오니 확인 부탁 드리겠습니다.
 
 -------
