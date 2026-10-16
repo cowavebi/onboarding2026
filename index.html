@@ -715,7 +715,6 @@
           <label class="chk-opt"><input type="checkbox" id="cs_chkBudget"> 예산 확인</label>
           <label class="chk-opt"><input type="checkbox" id="cs_chkResponsive"> 반응형 스킨 선제안 (+ 버전 확인 안내)</label>
           <label class="chk-opt"><input type="checkbox" id="cs_chkMigration"> 기존 몰 데이터 이전 안내 포함</label>
-          <label class="chk-opt"><input type="checkbox" id="cs_chkDuration"> 구축 소요기간(약 4주) 안내 포함</label>
         </div>
         <div class="field field-sub" id="cs_refWrap" style="display:none">
           <label>감지된 레퍼런스 링크</label><input id="cs_refUrl" placeholder="https://...">
@@ -1797,7 +1796,6 @@ function csClassify(text){
   const basicSkinKw = /스킨\s*기반|기본\s*(셋팅|세팅)|무료\s*스킨/.test(t);
   const responsiveKw = /반응형/.test(t);
   const budgetStated = /\d[\d,]*\s*(만\s*원|원)/.test(t);
-  const durationKw = /일정|기간|언제|얼마나\s*걸리|소요/.test(t);
   const detailAttachedKw = /첨부|엑셀파일|요청서|참고\s*부탁/.test(t);
   // PC/모바일을 둘 다 명시한 경우에만 생략하고, 그 외(한쪽만 언급 또는 언급 없음)는 기본적으로 확인 질문을 넣습니다.
   const pcMentioned = /\bPC\b|피씨|컴퓨터\s*화면/i.test(t);
@@ -1817,7 +1815,6 @@ function csClassify(text){
     type,
     url: urlMatch ? urlMatch[0] : "",
     budgetStated,
-    durationKw,
     detailAttachedKw,
     responsiveKw,
     migSource: migHit || "",
@@ -1825,6 +1822,7 @@ function csClassify(text){
     deviceBothStated,
   };
 }
+// (참고: 구축 소요기간 안내는 디자인 상담과 무관하여 이 분류기에서 다루지 않습니다.)
 
 function csApplyClassification(c){
   const radios = document.querySelectorAll('input[name="csType"]');
@@ -1836,7 +1834,6 @@ function csApplyClassification(c){
   document.getElementById("cs_chkSkin").checked = (c.type==="partial" || c.type==="basic_renewal") && !detailGiven;
   document.getElementById("cs_chkResponsive").checked = (c.type==="basic_renewal");
   document.getElementById("cs_chkBudget").checked = !c.budgetStated;
-  document.getElementById("cs_chkDuration").checked = c.durationKw;
   document.getElementById("cs_chkDevice").checked = !c.deviceBothStated;
 
   const refChk = document.getElementById("cs_chkRef");
@@ -1927,14 +1924,12 @@ function csBuildBody(){
     const src = document.getElementById("cs_migSource").value.trim() || "타 플랫폼";
     blocks.push(`기존에 운영 중이신 ${src}의 데이터를 메이크샵으로 이전하시는 부분도 필요하신 경우, 상품/리뷰 데이터는 1회 무상 이전 지원이 가능합니다. 이전을 원하시면 관리자 계정 정보 또는 상품/리뷰 엑셀 데이터를 전달 부탁드립니다.\n다만 타 플랫폼에서 제공하는 데이터 범위에 따라 이전 가능한 세부 항목에 제한이 있을 수 있는 점 참고 부탁드립니다.`);
   }
-  if(document.getElementById("cs_chkDuration").checked){
-    if(type==="basic_renewal" || type==="brand"){
-      blocks.push("데이터 이전, 디자인 작업과 더불어 PG 심사 및 도메인 이전까지 모두 진행 시, 실제 오픈까지 약 4주 정도의 시간이 소요됩니다. 진행 중 특이사항이 없다면 지연 없이 오픈 가능합니다.");
-    } else if(csLast && csLast.detailAttachedKw){
-      blocks.push("전달주신 요청 내용 기준으로 전담 매니저 배정 후, 견적과 함께 공수·일정을 안내드리겠습니다.");
-    } else {
-      blocks.push("정확한 작업 일정과 비용은 요청 범위/난이도에 따라 상이하여, 전달주신 내용을 디자인 전담 매니저가 검토한 후 견적과 함께 상세 일정을 안내드리겠습니다.");
-    }
+  // 디자인 상담은 구축(이관+디자인+PG+도메인) 전체 일정과 무관하므로, 전체 구축 소요기간(약 4주) 안내는
+  // 이 탭에서 다루지 않습니다. 대신 디자인 작업 자체의 견적·공수 안내만 포함합니다.
+  if(csLast && csLast.detailAttachedKw){
+    blocks.push("전달주신 요청 내용 기준으로 전담 매니저 배정 후, 견적과 함께 공수·일정을 안내드리겠습니다.");
+  } else {
+    blocks.push("정확한 작업 일정과 비용은 요청 범위/난이도에 따라 상이하여, 전달주신 내용을 디자인 전담 매니저가 검토한 후 견적과 함께 상세 일정을 안내드리겠습니다.");
   }
   return blocks.join("\n\n");
 }
