@@ -1962,7 +1962,7 @@ ${csBuildBody()}
 -------
 
 전달주신 내용을 토대로 구체적인 상담과 진행을 전담하는 매니저 배정을 통해 별도로 연락 드리도록 하겠습니다.
-추가 궁금하신 점은 본 이메일 또는 메이크샵PRO 채널톡(아래 링크)으로 문의 부탁 드립니다.
+추가 궁금하신 점은 본 메일로 회신 부탁 드립니다.
 감사합니다:)
 
 ${sender}드림
@@ -1971,8 +1971,7 @@ ${sender}드림
 ${sender} 매니저
 메이크샵 / 메이크샵PRO팀
 서울시 금천구 가산디지털1로 168 우림라이온스밸리A동 1401호 ~ 1408호
-Email ${email}
-상담채널 http://pf.kakao.com/_uIDWT`;
+Email ${email}`;
   csCur = {subj, body};
   document.getElementById("csMailOut").innerHTML = `<div class="subj">제목: ${subj.replace(/</g,"&lt;")}</div>${body.replace(/</g,"&lt;")}`;
 }
