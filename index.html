@@ -348,16 +348,6 @@
 .form-card textarea:focus,.form-card input:focus{outline:none;border-color:var(--blue)}
 #dgMsg,#dgErr,#dgParseMsg{display:none}
 #dgMsg.show,#dgErr.show,#dgParseMsg.show{display:inline-block}
-#csParseMsg,#csMsg{display:none}
-#csParseMsg.show,#csMsg.show{display:inline-block}
-.radio-list,.chk-list{display:flex;flex-direction:column;gap:9px}
-.radio-opt,.chk-opt{display:flex;align-items:flex-start;gap:9px;font-size:13.3px;color:var(--ink-2);
-  line-height:1.55;padding:10px 12px;border:1px solid var(--line);border-radius:10px;cursor:pointer;
-  background:var(--bg);transition:border-color .15s,background .15s}
-.radio-opt:has(input:checked),.chk-opt:has(input:checked){border-color:var(--blue);background:var(--blue-50)}
-.radio-opt input,.chk-opt input{margin-top:2px;flex:none;accent-color:var(--blue)}
-.radio-opt b{color:var(--ink);font-weight:700}
-.field-sub{margin-top:12px}
 </style>
 </head>
 <body class="locked">
@@ -436,7 +426,6 @@
       <button data-p="templates">양식 자료실</button>
       <button data-p="gen">안내 메일 생성</button>
       <button data-p="docgen">1차 안내 문서 생성</button>
-      <button data-p="consult">디자인 상담 답변</button>
       <button data-p="status">프로젝트 현황</button>
       <button data-p="faq">FAQ</button>
       <a class="navlink-ext" href="https://cowavebi.github.io/onboarding2026/guide.html" target="_blank" rel="noopener">
@@ -660,80 +649,6 @@
         <button class="btn" id="dgBuildBtn">DOCX 생성 후 내려받기</button>
         <span class="copied" id="dgMsg">생성 완료 — 내려받기 시작됨</span>
         <span class="copied" id="dgErr" style="color:#DC2626">템플릿 로딩 실패. 새로고침 후 다시 시도해 주세요.</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="panel" id="consult">
-    <div class="wrap">
-      <div class="section-head" style="margin-top:44px">
-        <div class="k">CONSULT ASSIST</div>
-        <h2>디자인 상담 1차 답변 생성</h2>
-        <p>고객 문의 원문을 그대로 붙여넣으면 작업 성격을 자동으로 판단해 1차 안내 메일 초안을 만들어 줍니다. 자동 판단은 100% 정확하지 않으니, 메일을 생성하기 전에 아래 체크 항목을 꼭 확인·수정해 주세요.</p>
-      </div>
-
-      <div class="form-card" style="margin-bottom:18px">
-        <h3>고객 문의 원문</h3>
-        <p class="hint">PRO 상담접수 게시판 등에서 받은 문의 내용을 그대로 붙여넣고 "문의 분석하기"를 눌러 주세요.</p>
-        <textarea id="csRaw" rows="6" placeholder="예: 현재 운영중인 사이트를 반응형으로 올 리뉴얼 하고 싶어요. 어찌 해야 하나요..?"></textarea>
-        <div class="out-actions" style="margin-top:10px">
-          <button class="btn ghost" id="csParseBtn" type="button">문의 분석하기</button>
-          <span class="copied" id="csParseMsg">자동으로 판단했습니다 — 아래 항목을 확인해 주세요</span>
-        </div>
-      </div>
-
-      <div class="form-card" style="margin-bottom:18px">
-        <h3>기본 정보</h3>
-        <div class="dg-row">
-          <div class="field"><label>담당자 성함/직급 <span class="opt">(선택)</span></label><input id="cs_person" placeholder="예: 홍길동 대표 (비워두면 [성함/직급]님으로 생성)"></div>
-          <div class="field"><label>작성자(발신자)</label>
-            <input id="cs_sender" placeholder="예: 오은비 매니저 / 메이크샵 온보딩팀" value="오은비 매니저 / 메이크샵 온보딩팀">
-          </div>
-        </div>
-      </div>
-
-      <div class="form-card" style="margin-bottom:18px">
-        <h3>작업 성격</h3>
-        <p class="hint">문의 내용을 분석해 가장 가까운 유형을 자동으로 선택해 둡니다. 판단이 다르다고 생각되면 직접 선택해 주세요.</p>
-        <div class="radio-list">
-          <label class="radio-opt"><input type="radio" name="csType" value="basic_renewal" checked> <span><b>기본 셋팅 리뉴얼</b> — 무료 스킨 기반으로 전체 틀을 새로 잡는 작업</span></label>
-          <label class="radio-opt"><input type="radio" name="csType" value="partial"> <span><b>부분 커스텀 수정</b> — 기존 스킨의 일부 영역만 수정</span></label>
-          <label class="radio-opt"><input type="radio" name="csType" value="brand"> <span><b>브랜딩 전체 제작</b> — 템플릿 틀을 벗어난 1:1 맞춤 제작</span></label>
-          <label class="radio-opt"><input type="radio" name="csType" value="unclear"> <span><b>판단 보류</b> — 두 방향을 모두 안내하고 고객에게 선택을 요청</span></label>
-        </div>
-      </div>
-
-      <div class="form-card" style="margin-bottom:18px">
-        <h3>포함할 확인 질문</h3>
-        <p class="hint">문의에서 감지된 내용에 따라 자동으로 체크됩니다. 필요에 맞게 추가·해제해 주세요.</p>
-        <div class="chk-list">
-          <label class="chk-opt"><input type="checkbox" id="cs_chkDevice"> PC/모바일 작업 범위 확인 (구조가 바뀌는 작업일수록 중요)</label>
-          <label class="chk-opt"><input type="checkbox" id="cs_chkSkin"> 기준 스킨명 확인 (보관 스킨이 여러 개인 경우 포함)</label>
-          <label class="chk-opt"><input type="checkbox" id="cs_chkRef"> 참고자료 확인 (전체 리뉴얼: 레퍼런스·기획서 / 부분 커스텀: 수정 영역·페이지)</label>
-          <label class="chk-opt"><input type="checkbox" id="cs_chkBudget"> 예산 확인</label>
-        </div>
-        <div class="field field-sub" id="cs_refWrap" style="display:none">
-          <label>감지된 레퍼런스 링크</label><input id="cs_refUrl" placeholder="https://...">
-        </div>
-      </div>
-
-      <div class="gen-grid" style="margin-bottom:40px">
-        <div class="form-card">
-          <h3>고객 문의 인용 (메일에 들어갈 내용)</h3>
-          <p class="hint">메일의 [문의본문]에 그대로 들어갑니다. 다듬고 싶으면 수정해 주세요.</p>
-          <textarea id="cs_quote" rows="10"></textarea>
-        </div>
-        <div class="out-card">
-          <h3>생성된 1차 안내 메일</h3>
-          <p class="hint">제목과 본문이 함께 생성됩니다. 발송 전 대괄호 부분과 자동 판단 내용을 꼭 확인하세요.</p>
-          <div class="mail-box" id="csMailOut" style="color:var(--gray)">왼쪽에 고객 문의와 정보를 입력한 뒤, 아래 [답변 메일 생성] 버튼을 클릭해주세요.</div>
-          <div class="out-actions">
-            <button class="btn" id="csBuildBtn" type="button">답변 메일 생성</button>
-            <button class="btn ghost" id="csCopyBtn" type="button">본문 복사</button>
-            <button class="btn ghost" id="csCopySubjBtn" type="button">제목 복사</button>
-            <span class="copied" id="csCopiedMsg">복사되었습니다</span>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -1819,219 +1734,6 @@ function dgParseAndFill(){
 const dgParseBtn=document.getElementById("dgParseBtn");
 if(dgParseBtn)dgParseBtn.addEventListener("click",dgParseAndFill);
 
-/* ================= 디자인 상담 1차 답변 생성 ================= */
-// 과거 상담 메일 32건(2025.03~2026.10) 분석 결과를 바탕으로 한 규칙 기반 판단입니다.
-// 자유 문장 분석이라 100% 정확하지 않으므로, 아래 체크 항목으로 사람이 확인·수정하는 구조로 설계했습니다.
-const CS_SENDER_EMAIL = {"오은비":"eboh@cowave.kr","이선아":"sunah711@cowave.kr"};
-
-function csClassify(text){
-  const t = text || "";
-  const urlMatch = /https?:\/\/[^\s)"'>\]]+/.exec(t);
-  const customBrandKw = /맞춤\s*제작|1:1\s*(맞춤|디자인)|브랜딩|기획서|신규\s*홈페이지/.test(t);
-  const partialKw = /부분\s*(수정|커스텀|만)|일부\s*(수정|영역|만)|수정\s*(의뢰|요청)|튜닝|스킨\s*일부|만\s*(변경|교체|수정)/.test(t);
-  // 바른 "리뉴얼"만으로는 전체/부분을 가를 수 없어("메인플래시 부분만 변경 + 일정" 같은 문장에 둘 다 등장),
-  // '전체'/'올'이 붙었거나 신규 구축을 가리키는 표현일 때만 전체 리뉴얼로 판단합니다.
-  const renewalKw = /전체\s*리뉴얼|올\s*리뉴얼|새로\s*(구축|제작|만들)|신규\s*구축|기틀/.test(t);
-  const basicSkinKw = /스킨\s*기반|기본\s*(셋팅|세팅)|무료\s*스킨/.test(t);
-  const budgetStated = /\d[\d,]*\s*(만\s*원|원)/.test(t);
-  const detailAttachedKw = /첨부|엑셀파일|요청서|참고\s*부탁/.test(t);
-  // 부분 커스텀은 '현재 사용 중인 스킨'에서 일부를 고치는 작업이 대부분이라, 스킨을 새로 선택/전환하겠다는
-  // 말이 없으면 스킨명을 묻지 않습니다. 고객이 스킨 자체를 바꾸려는 경우에만 확인이 필요합니다.
-  const skinChangeKw = /스킨.{0,6}(변경|교체|전환)|템플릿.{0,6}(변경|교체)|다른\s*스킨|새\s*스킨/.test(t);
-  // PC/모바일을 둘 다 명시한 경우에만 생략하고, 그 외(한쪽만 언급 또는 언급 없음)는 기본적으로 확인 질문을 넣습니다.
-  const pcMentioned = /\bPC\b|피씨|컴퓨터\s*화면/i.test(t);
-  const mobileMentioned = /모바일|핸드폰\s*화면|스마트폰\s*화면/.test(t);
-  const deviceBothStated = pcMentioned && mobileMentioned;
-
-  let type;
-  if(customBrandKw) type="brand";
-  else if(partialKw && !renewalKw) type="partial";
-  else if(renewalKw || basicSkinKw) type="basic_renewal";
-  else type="unclear";
-
-  return {
-    type,
-    url: urlMatch ? urlMatch[0] : "",
-    budgetStated,
-    detailAttachedKw,
-    deviceBothStated,
-    skinChangeKw,
-  };
-}
-// (참고: 구축 소요기간 안내는 디자인 상담과 무관하여 이 분류기에서 다루지 않습니다.)
-
-function csApplyClassification(c){
-  const radios = document.querySelectorAll('input[name="csType"]');
-  radios.forEach(r=>{ r.checked = (r.value === c.type); });
-
-  // 요청서/첨부파일을 이미 상세히 주신 경우, 스킨명·범위 재질문은 기본적으로 생략합니다.
-  // (실제로 다 적혀 있는지는 사람이 파일을 봐야 알 수 있으므로, 체크박스는 그대로 두고 기본값만 조정합니다.)
-  const detailGiven = c.detailAttachedKw;
-  // '현재 사용 중인 스킨'에서 일부만 고치는 작업이 대부분이라, 스킨을 새로 선택/전환하겠다는
-  // 언급이 없으면 스킨명을 묻지 않습니다. 기본 셋팅 리뉴얼(스킨을 고르는 작업 자체)이거나,
-  // 스킨 변경/전환 의사가 감지된 경우에만 기본 체크합니다.
-  document.getElementById("cs_chkSkin").checked = !detailGiven && (c.type==="basic_renewal" || c.skinChangeKw);
-  // 브랜딩 전체 제작(= 맞춤디자인)은 참고 레퍼런스·예산 확인이 필수라 감지 여부와 무관하게 항상 체크합니다.
-  document.getElementById("cs_chkBudget").checked = c.type==="brand" ? true : !c.budgetStated;
-  document.getElementById("cs_chkDevice").checked = !c.deviceBothStated;
-
-  const refChk = document.getElementById("cs_chkRef");
-  const refWrap = document.getElementById("cs_refWrap");
-  const refUrl = document.getElementById("cs_refUrl");
-  // 큰 틀: 전체 리뉴얼류는 참고사이트/기획서 "여부"를 확인하는 선택적 질문이라 URL이 감지됐을 때만 기본 체크하고,
-  // 부분 커스텀은 detail(요청서)이 이미 없으면 항상 "수정 원하는 영역·페이지" 확인이 필요합니다.
-  // 브랜딩(맞춤디자인)은 레퍼런스 확인이 필수이므로 항상 체크합니다.
-  refChk.checked = c.type==="brand" ? true : (c.type==="partial" ? !detailGiven : (!!c.url && !detailGiven));
-  if(c.url){ refUrl.value = c.url; refWrap.style.display="block"; } else { refWrap.style.display = refChk.checked ? "block" : "none"; }
-}
-
-// 작업 성격을 사람이 직접 바꾸면 스킨확인·레퍼런스·예산 체크를 그 유형의 기본값으로 다시 맞춰줍니다.
-document.querySelectorAll('input[name="csType"]').forEach(r=>{
-  r.addEventListener("change", ()=>{
-    const type = r.value;
-    // 기본 셋팅 리뉴얼은 스킨을 고르는 작업 자체라 기본 체크, 부분 커스텀은 스킨 전환 언급이 있을 때만 체크됩니다
-    // (여기서는 수동 전환이라 보수적으로 기본 셋팅 리뉴얼만 자동 체크).
-    document.getElementById("cs_chkSkin").checked = (type==="basic_renewal");
-    // 브랜딩(맞춤디자인)으로 직접 전환한 경우 레퍼런스·예산 확인을 항상 켜줍니다.
-    if(type==="brand"){
-      document.getElementById("cs_chkRef").checked = true;
-      document.getElementById("cs_chkBudget").checked = true;
-      document.getElementById("cs_refWrap").style.display = "block";
-    }
-  });
-});
-document.getElementById("cs_chkRef").addEventListener("change", (e)=>{
-  document.getElementById("cs_refWrap").style.display = e.target.checked ? "block" : "none";
-});
-
-let csLast = null;
-document.getElementById("csParseBtn").addEventListener("click", ()=>{
-  const raw = document.getElementById("csRaw").value || "";
-  if(!raw.trim()) return;
-  document.getElementById("cs_quote").value = raw.trim();
-  csLast = csClassify(raw);
-  csApplyClassification(csLast);
-  const msg = document.getElementById("csParseMsg");
-  msg.classList.add("show"); setTimeout(()=>msg.classList.remove("show"),3000);
-});
-
-function csType(){ const r=document.querySelector('input[name="csType"]:checked'); return r?r.value:"basic_renewal"; }
-function csPersonLabel(){ const v=document.getElementById("cs_person").value.trim(); return v ? v+"," : "[성함/직급]님,"; }
-
-const CS_TYPE_BLOCK = {
-  basic_renewal: "현재 말씀 주신 내용은, 메이크샵에서 무료로 제공하는 디자인 템플릿(스킨)을 기반으로 전체적인 틀을 새로 잡는 작업으로 파악됩니다.",
-  partial: "요청 주신 내용은 기존 디자인(스킨)의 일부 영역을 수정하는 부분 커스텀 작업으로 파악됩니다.",
-  brand: "말씀하신 내용은 기존 템플릿 틀을 벗어난 1:1 맞춤(브랜딩) 제작으로 파악됩니다.",
-  unclear: "작업 방향 확인을 위해 안내드립니다. 메이크샵에서 제공하는 무료 스킨을 기반으로 일부 영역만 수정하는 방법과, 템플릿 틀 없이 전체를 새로 맞춤 제작하는 방법이 있어, 희망하시는 방향을 선택해 주시기 바랍니다.",
-};
-
-function csBuildBody(){
-  const type = csType();
-  const hasQuestions = ["cs_chkSkin","cs_chkDevice","cs_chkRef","cs_chkBudget"]
-    .some(id => document.getElementById(id).checked);
-
-  const blocks = [];
-  if(hasQuestions){
-    blocks.push("문의하신 내용 확인하였으며, 아래 추가 확인이 필요한 부분이 있어 안내 드립니다.");
-  }
-  blocks.push(CS_TYPE_BLOCK[type]);
-
-  if(document.getElementById("cs_chkSkin").checked){
-    if(type==="partial"){
-      blocks.push("현재 사용 중이신 스킨에서 작업 진행하는 방향으로 확인 부탁드리며, 별도로 전환하실 스킨이 있는 경우 스킨명을 알려주시기 바랍니다.");
-    } else {
-      blocks.push("작업 기준이 되는 스킨명을 확인 부탁드리며, 보관 중인 스킨이 여러 개인 경우 어떤 스킨을 기준으로 작업할지 함께 알려주시기 바랍니다.\n(확인 경로: [디자인 > 디자인 스킨 관리 > 디자인 스킨 추가])");
-    }
-  }
-  if(document.getElementById("cs_chkDevice").checked){
-    blocks.push("PC 화면만 작업 희망이신지, 모바일 화면도 함께 작업 희망이신지 확인 부탁드립니다.");
-  }
-  if(document.getElementById("cs_chkRef").checked){
-    const url = document.getElementById("cs_refUrl").value.trim();
-    // 큰 틀: 전체 리뉴얼은 "참고사이트/기획서/요구사항 정의서 여부"를, 부분 커스텀은
-    // "수정 원하는 영역·페이지 등 구체적인 내용"을 확인하는 것으로 구분합니다.
-    if(type==="partial"){
-      if(url){
-        blocks.push(`전달해주신 ${url} 사이트를 참고하여, 수정 원하시는 영역이나 페이지 등 구체적인 내용을 전달 부탁드립니다.`);
-      } else {
-        blocks.push("수정 원하시는 영역이나 페이지 등 구체적인 내용을 전달 부탁드립니다.");
-      }
-    } else {
-      if(url){
-        blocks.push(`전달해주신 ${url} 사이트를 전체적으로 참고하여 구축 원하시는 게 맞으실까요, 아니면 특정 영역만 참고 원하시는 걸까요?\n참고하시는 각 구성/페이지가 문구로만 노출되길 원하시는지, 이미지 추가를 희망하시는지도 함께 알려주시면 검토에 도움이 됩니다.`);
-      } else {
-        blocks.push("참고하고 계신 사이트가 있다면 전달 부탁드리며, 별도로 정리하신 기획서나 요구사항 정의서가 있다면 함께 전달 부탁드립니다. 문서로 정리하기 어려우시면 간단한 설명만 주셔도 검토 가능합니다.");
-      }
-    }
-  }
-  if(document.getElementById("cs_chkBudget").checked){
-    blocks.push("작업 비용은 요청 범위, 난이도, 시안 제작 여부 등에 따라 상이합니다. 계획하신 예산이 있으시면 말씀해주시면 작업 범위 검토 시 참고하도록 하겠습니다.");
-  }
-  // 디자인 상담은 구축(이관+디자인+PG+도메인) 전체 일정과 무관하므로, 전체 구축 소요기간(약 4주) 안내는
-  // 이 탭에서 다루지 않습니다. 대신 디자인 작업 자체의 견적·공수 안내만 포함합니다.
-  if(csLast && csLast.detailAttachedKw){
-    blocks.push("전달주신 요청 내용 기준으로 전담 매니저 배정 후, 견적과 함께 공수·일정을 안내드리겠습니다.");
-  } else {
-    blocks.push("정확한 작업 일정과 비용은 요청 범위/난이도에 따라 상이하여, 전달주신 내용을 디자인 전담 매니저가 검토한 후 견적과 함께 상세 일정을 안내드리겠습니다.");
-  }
-  return blocks.join("\n\n");
-}
-
-let csCur = {subj:"", body:""};
-function csRender(){
-  // 작성자 입력란은 "오은비 매니저 / 메이크샵 온보딩팀"처럼 성함·직급·팀을 한 줄로 직접 입력받습니다.
-  // 인사말/서명에 쓸 성함만 앞 단어로 뽑아 쓰고, 이메일은 알려진 이름(오은비/이선아)일 때만 자동 매칭합니다.
-  const senderRaw = document.getElementById("cs_sender").value.trim() || "오은비 매니저 / 메이크샵 온보딩팀";
-  const senderName = (senderRaw.match(/^[가-힣]+/) || [senderRaw.split(/\s+/)[0]])[0];
-  const emailKey = Object.keys(CS_SENDER_EMAIL).find(k => senderName.includes(k));
-  const email = CS_SENDER_EMAIL[emailKey] || CS_SENDER_EMAIL["오은비"];
-  const quote = document.getElementById("cs_quote").value.trim() || "[고객 문의 원문을 입력해 주세요]";
-  const subj = "[메이크샵PRO] 쇼핑몰 디자인 문의 접수 관련 안내드립니다.";
-  // 요청서가 문의와 "함께" 접수된 것이지, 문의 접수 후 별도로 전달받은 것이 아니므로
-  // 두 문장으로 쪼개지 않고 한 문장으로 안내합니다.
-  const receiptLine = (csLast && csLast.detailAttachedKw)
-    ? "PRO 상담접수 게시판을 통해 요청서(자료)와 함께 문의 접수 주신 것 확인하였습니다."
-    : "PRO 상담접수 게시판을 통해 문의접수 주신 것 확인하여 안내 차 연락드렸습니다.";
-  const body =
-`안녕하세요, ${csPersonLabel()}
-메이크샵PRO팀 ${senderName}입니다.
-
-메이크샵을 이용해주셔서 감사합니다 :)
-${receiptLine}
-관련하여 아래 안내드리오니 확인 부탁 드리겠습니다.
-
--------
-
-[문의본문]
-${quote}
-
-
-[답변]
-${csBuildBody()}
-
--------
-
-전달주신 내용을 토대로 구체적인 상담과 진행을 전담하는 매니저 배정을 통해 별도로 연락 드리도록 하겠습니다.
-추가 궁금하신 점은 본 메일로 회신 부탁 드립니다.
-감사합니다:)
-
-${senderName}드림
-
-
-${senderRaw}
-서울시 금천구 가산디지털1로 168 우림라이온스밸리A동 1401호 ~ 1408호
-Email ${email}`;
-  csCur = {subj, body};
-  document.getElementById("csMailOut").innerHTML = `<div class="subj">제목: ${subj.replace(/</g,"&lt;")}</div>${body.replace(/</g,"&lt;")}`;
-}
-document.getElementById("csBuildBtn").addEventListener("click", csRender);
-function csFlash(){ const m=document.getElementById("csCopiedMsg"); m.classList.add("show"); setTimeout(()=>m.classList.remove("show"),1400); }
-document.getElementById("csCopyBtn").addEventListener("click", ()=>navigator.clipboard.writeText(csCur.body).then(csFlash));
-document.getElementById("csCopySubjBtn").addEventListener("click", ()=>navigator.clipboard.writeText(csCur.subj).then(csFlash));
-// 페이지 로드 시 바로 기본값으로 메일을 생성하면 실제 문의 내용 없이도 완성된 메일처럼 보여
-// 혼동을 줄 수 있어, 버튼을 클릭하기 전까지는 안내 문구만 표시합니다.
-
-
 /* ================= 프로젝트 현황 ================= */
 // 기준일: 주간 현황 시트 스냅샷. 시트 갱신 시 SNAPSHOT_DATE 와 아래 데이터를 함께 수정하세요. (start 필드 미사용 - 착수일 미노출)
 // 규칙: '동서샵(운영대행)'과 '고맛나루장터(운영대행)'는 시트에 있어도 이 현황판에는 항상 제외합니다.
@@ -2060,7 +1762,7 @@ const CLOSED = [
   {name:"쿨샤", pm:"오은비", due:"2026-08-05", stage:"오픈취소", diff:1},
   {name:"알캠몰", pm:"오은비", due:"보류", stage:"오픈취소", diff:3},
   {name:"세림식품원료", pm:"오은비", due:"미정", stage:"오픈취소", diff:3},
-  {name:"익스트릿", pm:"오은비", due:"2027", stage:"오픈연기", diff:3},
+  {name:"익스트릿", pm:"오은비", due:"2027", stage:"오픈취소", diff:3},
 ];
 
 (function renderStatus(){
