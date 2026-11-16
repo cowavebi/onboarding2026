@@ -300,6 +300,7 @@
   .field label .opt{color:var(--gray-2);font-weight:400}
   .mail-box{background:var(--blue-50);border:1px solid var(--line);border-radius:12px;padding:18px 20px;
     font-size:13.6px;white-space:pre-wrap;word-break:break-word;min-height:140px;line-height:1.72;color:var(--ink-2)}
+  .mail-box .fmt{font-size:.86em;color:var(--blue);display:inline}
   .mail-box .subj{font-weight:700;color:var(--ink);padding-bottom:11px;margin-bottom:13px;border-bottom:1px solid var(--line)}
   .out-actions{display:flex;gap:9px;margin-top:15px;align-items:center;flex-wrap:wrap}
   .copied{color:var(--blue);font-size:12.5px;font-weight:600;opacity:0;transition:opacity .2s}
@@ -999,11 +1000,8 @@ window.MAIL_TEMPLATES = [
 https://www.makeshop.co.kr/newmakeshop/home/mlogin.html?action_mode=write&return_url=contact
 
 ① 문의하기 항목 기재 : 고객명 / 비밀번호 / 이메일 / 휴대폰번호(필수)
-
 ② 문의 유형/세부유형 : "동의서처리 요청" 선택, 세부유형은 "분류없음" 선택
-
 ③ 제목 : [업체명] 데이터 이전 동의
-
 ④ 내용 : 아래 양식을 작성하여 [내용] 란에 붙여넣어 주세요 (동의 내용 확인 필수!)
 
 [내용 양식]
@@ -1591,11 +1589,25 @@ function render(){let subj=curTpl.subject,body=curTpl.body;
     subj=subj.split(def.token).join(val);body=body.split(def.token).join(val);});
   cur={subj,body};
   const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
-  document.getElementById("mailOut").innerHTML=`<div class="subj">제목: ${esc(subj)}</div>${esc(body)}`;}
+  // [내용 양식] 블록(고객이 복사해 붙여넣는 양식)은 본문과 구분되도록 작고 다른 색으로 표시
+  const FMT=/\[내용 양식\][\s\S]*?(?=\n⑤)/;
+  const fmtHtml=(b,styled)=>esc(b).replace(FMT,m=>styled?`<span style="font-size:12px;color:#2563EB">${m}</span>`:`<span class="fmt">${m}</span>`);
+  cur.html=`<div>${fmtHtml(body,true).replace(/\n/g,"<br>")}</div>`;
+  document.getElementById("mailOut").innerHTML=`<div class="subj">제목: ${esc(subj)}</div>${fmtHtml(body,false)}`;}
 stageSel.addEventListener("change",()=>{curTpl=TPLS[+stageSel.value];stageDesc.textContent=curTpl.desc;buildFields();render();});
 if(curTpl){stageDesc.textContent=curTpl.desc;buildFields();render();}
 function flash(){const m=document.getElementById("copiedMsg");m.classList.add("show");setTimeout(()=>m.classList.remove("show"),1400);}
-document.getElementById("copyBtn").addEventListener("click",()=>navigator.clipboard.writeText(cur.body).then(flash));
+document.getElementById("copyBtn").addEventListener("click",async()=>{
+  try{
+    if(window.ClipboardItem&&cur.html){
+      await navigator.clipboard.write([new ClipboardItem({
+        "text/html":new Blob([cur.html],{type:"text/html"}),
+        "text/plain":new Blob([cur.body],{type:"text/plain"})})]);
+      flash();return;
+    }
+  }catch(e){}
+  navigator.clipboard.writeText(cur.body).then(flash);
+});
 document.getElementById("copySubjBtn").addEventListener("click",()=>navigator.clipboard.writeText(cur.subj).then(flash));
 
 /* ================= 1차 안내 문서 자동 생성 (DOCX) ================= */
