@@ -1900,7 +1900,7 @@ function dday(due){
     </div>`;
   }).join("");
 
-  document.getElementById("doneBody").innerHTML=CLOSED.map(p=>
+  document.getElementById("doneBody").innerHTML=[...CLOSED].sort((a,b)=>{const ad=/^\d{4}-/.test(a.due)?a.due:"9999",bd=/^\d{4}-/.test(b.due)?b.due:"9999";return ad<bd?-1:ad>bd?1:0;}).map(p=>
     `<tr><td class="nm">${maskName(p.name)}</td><td>${p.pm}</td>
      <td>${p.due||"—"}</td>
      <td><span class="badge st-${p.stage}">${p.stage}</span></td><td>${p.diff}</td></tr>`
