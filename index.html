@@ -564,7 +564,7 @@
           <option value="result">2단계 · 1차 데이터 이전 결과 안내서</option>
           <option value="final">3단계 · 최종데이터 이관 안내서</option>
         </select></div>
-        <p class="hint" id="dgManualNote" style="display:none;color:#1D4ED8;font-weight:600">※ 1차·최종 안내서에는 이전 항목을 입력하지 않습니다. 문서에 "이전 가능 항목과 동일합니다. 데이터 검토 결과 안내서를 참고해 주세요."로 표시됩니다.</p>
+        <p class="hint" id="dgManualNote" style="display:none;color:#1D4ED8"><b>※ 이전 항목은 입력하지 않습니다.</b> 문서에는 다음 문구가 들어갑니다 — <span id="dgRefText"></span></p>
       </div>
 
       <div class="form-card" style="margin-bottom:18px">
@@ -1540,14 +1540,15 @@ const DG_DOCS={
           boards:"이전 가능 게시판", openDate:false, agreed:false},
   result:{asset:"tplResult", fname:"1차_데이터_이전_결과_안내서", dateLabel:"1차 이전일",
           datePh:"예: 2026.10.02", items:"이전 결과",
-          boards:"이전된 게시판", openDate:false, agreed:true},
+          boards:"이전된 게시판", openDate:false, agreed:true,
+          itemsRef:"이전 가능 항목은 데이터 검토 결과 안내서를 참고해 주세요. 데이터 검토 결과에서 회신 주신 내용으로 1차 데이터를 이전한 결과입니다."},
   final:{asset:"tplFinal", fname:"최종데이터_이관_안내서", dateLabel:"최종 이전일",
          datePh:"예: 2026.10.18", items:"최종 이전 결과",
-         boards:"이전된 게시판", openDate:true, agreed:false},
+         boards:"이전된 게시판", openDate:true, agreed:false,
+         itemsRef:"이전 가능 항목은 데이터 검토 결과 안내서를 참고해 주세요. 데이터 검토 결과 및 1차 데이터 이전 완료 후, 최종 확인한 기준으로 이전한 데이터 결과입니다."},
 };
 const DG_ITEM_IDS=["dg_productItems","dg_boardItems","dg_memberItems","dg_orderItems"];
 // 이전 항목은 소스에 기본값을 두지 않습니다. 검토 안내서에서만 붙여넣기·직접 입력으로 채웁니다.
-const DG_ITEM_REF="이전 가능 항목과 동일합니다. 데이터 검토 결과 안내서를 참고해 주세요.";
 DG_ITEM_IDS.forEach(id=>{const el=document.getElementById(id); if(!el) return;
   el.addEventListener("input",()=>{el.classList.toggle("dg-need", !el.value.trim());});});
 function dgSyncItems(){
@@ -1557,6 +1558,7 @@ function dgSyncItems(){
     el.placeholder = "붙여넣기로 채우거나 직접 입력해 주세요";
     el.classList.toggle("dg-need", useItems && !el.value.trim());});
   const note=document.getElementById("dgManualNote"); if(note) note.style.display = useItems ? "none" : "";
+  const rt=document.getElementById("dgRefText"); if(rt) rt.textContent = DG_DOCS[dgType()].itemsRef||"";
 }
 function dgType(){const s=document.getElementById("dgDocType");return (s&&DG_DOCS[s.value])?s.value:"review";}
 function dgSyncType(){
@@ -1603,19 +1605,19 @@ async function dgBuild(){
       docDate: dgVal("dg_docDate")||"[날짜]",
       openDate: dgVal("dg_openDate")||"[오픈 예정일]",
       productCount: dgVal("dg_productCount")||"[ ]",
-      productItems: dgType()==="review" ? dgVal("dg_productItems") : DG_ITEM_REF,
+      productItems: dgType()==="review" ? dgVal("dg_productItems") : (DG_DOCS[dgType()].itemsRef||""),
       productNotes: dgLines("dg_productNotes"),
       boardCount: dgVal("dg_boardCount")||"[ ]",
       boardTypes: dgVal("dg_boardTypes"),
-      boardItems: dgType()==="review" ? dgVal("dg_boardItems") : DG_ITEM_REF,
+      boardItems: dgType()==="review" ? dgVal("dg_boardItems") : (DG_DOCS[dgType()].itemsRef||""),
       boardNotes: dgLines("dg_boardNotes"),
       memberTotal: dgVal("dg_memberTotal")||"[ ]",
       memberNormal: dgVal("dg_memberNormal")||"[ ]",
       memberDormant: dgVal("dg_memberDormant")||"[ ]",
-      memberItems: dgType()==="review" ? dgVal("dg_memberItems") : DG_ITEM_REF,
+      memberItems: dgType()==="review" ? dgVal("dg_memberItems") : (DG_DOCS[dgType()].itemsRef||""),
       memberNotes: dgLines("dg_memberNotes"),
       orderCount: dgVal("dg_orderCount")||"[ ]",
-      orderItems: dgType()==="review" ? dgVal("dg_orderItems") : DG_ITEM_REF,
+      orderItems: dgType()==="review" ? dgVal("dg_orderItems") : (DG_DOCS[dgType()].itemsRef||""),
       orderNotes: dgLines("dg_orderNotes"),
     };
     // 배너의 수량 문구는 통째로 만들어 넣는다. 값이 없으면 빈 문자열이 들어가
