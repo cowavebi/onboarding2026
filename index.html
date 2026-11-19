@@ -306,6 +306,30 @@
   .copied{color:var(--blue);font-size:12.5px;font-weight:600;opacity:0;transition:opacity .2s}
   .copied.show{opacity:1}
 
+  /* 1차 상담 메일 탭 */
+  .ct-types{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+  @media(max-width:880px){.ct-types{grid-template-columns:1fr}}
+  .ct-type{text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;
+    padding:15px 17px;cursor:pointer;font-family:inherit;transition:border-color .13s,background .13s,box-shadow .13s}
+  .ct-type:hover{border-color:var(--blue)}
+  .ct-type[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-50);box-shadow:var(--shadow-sm)}
+  .ct-type .nm{display:block;font-size:14.5px;font-weight:700;color:var(--ink)}
+  .ct-type .no{display:inline-block;min-width:20px;height:20px;line-height:20px;text-align:center;
+    background:var(--gray);color:#fff;border-radius:5px;font-size:11.5px;font-weight:700;margin-right:8px}
+  .ct-type[aria-pressed="true"] .no{background:var(--blue)}
+  .ct-type .ds{display:block;margin-top:7px;font-size:12.6px;color:var(--gray);line-height:1.55}
+  .ct-subj{display:flex;gap:9px;align-items:center;margin-bottom:14px}
+  .ct-subj input{flex:1;min-width:0;border:1px solid var(--line);border-radius:9px;padding:10px 12px;
+    font-family:inherit;font-size:13.6px;color:var(--ink);background:var(--paper)}
+  .ct-links{display:grid;gap:11px}
+  .ct-lrow{display:grid;grid-template-columns:158px minmax(0,1fr);gap:11px;align-items:center}
+  @media(max-width:880px){.ct-lrow{grid-template-columns:1fr;gap:5px}}
+  .ct-lrow label{font-size:12.8px;font-weight:600;color:var(--ink-2)}
+  .ct-lrow input{border:1px solid var(--line);border-radius:9px;padding:9px 12px;width:100%;
+    font-family:inherit;font-size:12.8px;color:var(--ink);background:var(--paper)}
+  #ctBody a{color:var(--blue);text-decoration:underline}
+  #ctBody a.nolink{text-decoration:underline dotted;cursor:default}
+
   .rule-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-top:4px}
   .rule{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow-sm)}
   .rule h4{margin:0 0 7px;font-size:14.5px;font-weight:700}
@@ -426,6 +450,7 @@
     <div class="navlinks">
       <button class="active" data-p="home">개요</button>
       <button data-p="templates">양식 자료실</button>
+      <button data-p="consult">1차 상담 메일</button>
       <button data-p="gen">안내 메일 생성</button>
       <button data-p="docgen">양식 자동 채우기</button>
       <button data-p="status">프로젝트 현황</button>
@@ -510,6 +535,53 @@
             <span class="go">OneDrive에서 열기 ↗</span>
           </div>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="consult">
+    <div class="wrap">
+      <div class="section-head" style="margin-top:44px">
+        <div class="k">FIRST CONTACT</div>
+        <h2>1차 상담 메일</h2>
+        <p>타사이전 상담 게시판에 접수된 문의에 답변하는 1차 상담 메일입니다. 고객 문의 유형을 고르면 제목과 본문이 바로 완성됩니다. <b>본문 복사 (링크 포함)</b>로 복사하면 요금제·체험하기 링크가 걸린 채 네이버웍스 메일에 붙여넣어집니다.</p>
+      </div>
+
+      <div class="ct-types">
+        <button class="ct-type" data-ct="rental" aria-pressed="true">
+          <span class="nm"><span class="no">1</span>임대형 · 독립몰에서 이전</span>
+          <span class="ds">카페24, 고도몰, 자체 제작몰 등 — 회원 / 상품 / 주문 / 게시판 데이터 이전 안내</span>
+        </button>
+        <button class="ct-type" data-ct="smart" aria-pressed="false">
+          <span class="nm"><span class="no">2</span>스마트스토어에서 이전</span>
+          <span class="ds">네이버 스마트스토어 → 자사몰 구축 — 상품 / 리뷰 데이터만 이전 안내</span>
+        </button>
+      </div>
+
+      <div class="out-card">
+        <h3>생성된 메일</h3>
+        <p class="hint">제목은 두 유형 공통입니다. 필요하면 아래 칸에서 직접 수정한 뒤 복사하세요.</p>
+        <div class="ct-subj">
+          <input type="text" id="ctSubj">
+          <button class="btn ghost" id="ctCopySubj" type="button">제목 복사</button>
+        </div>
+        <div class="mail-box" id="ctBody"></div>
+        <div class="out-actions">
+          <button class="btn" id="ctCopyRich" type="button">본문 복사 (링크 포함)</button>
+          <button class="btn ghost" id="ctCopyPlain" type="button">텍스트만 복사</button>
+          <span class="copied" id="ctCopied">복사되었습니다</span>
+        </div>
+      </div>
+
+      <div class="form-card" style="margin-top:18px">
+        <h3>링크 주소</h3>
+        <p class="hint">본문에 링크로 들어가는 주소입니다. 수정하면 이 브라우저에 저장됩니다. 비우면 해당 문구는 링크 없이 글자만 복사됩니다(본문에서 점선 밑줄로 표시).</p>
+        <div class="ct-links">
+          <div class="ct-lrow"><label for="ctU-pricing">요금제 안내</label><input type="url" id="ctU-pricing" placeholder="https://..."></div>
+          <div class="ct-lrow"><label for="ctU-core">코어 요금제 상세</label><input type="url" id="ctU-core" placeholder="https://..."></div>
+          <div class="ct-lrow"><label for="ctU-demo">메이크샵 체험하기</label><input type="url" id="ctU-demo" placeholder="https://..."></div>
+        </div>
+        <div class="out-actions"><button class="btn ghost" id="ctResetLinks" type="button">기본 주소로 되돌리기</button></div>
       </div>
     </div>
   </section>
@@ -1410,6 +1482,7 @@ const GATE_HASH = "71c4e06ece01af111978ac1b4d3e76d6a583a99b1a64f1dd5af8fe219abab
 const GATE_KEY = "hub-gate-auth";
 const GATE_LABELS = {
   templates: {title:"양식 자료실", desc:"이 기능은 팀 내부 자료를 다루므로 비밀번호가 필요합니다."},
+  consult:   {title:"1차 상담 메일", desc:"메일 템플릿을 사용하려면 비밀번호가 필요합니다."},
   gen:       {title:"안내 메일 생성", desc:"메일 템플릿을 사용하려면 비밀번호가 필요합니다."},
   status:    {title:"프로젝트 현황", desc:"프로젝트 정보 확인에 비밀번호가 필요합니다."},
   download:  {title:"자료 다운로드", desc:"양식 자료를 내려받으려면 비밀번호가 필요합니다."}
@@ -1459,7 +1532,7 @@ document.getElementById("gateCancel").addEventListener("click", ()=>{
 gatePw.addEventListener("keydown", e=>{ if(e.key==="Enter") gateTry(); if(e.key==="Escape"){
   const p=gateClose(); p && p.onCancel && p.onCancel();
 }});
-const GATED_PAGES = new Set(["templates","gen","status","docgen"]);
+const GATED_PAGES = new Set(["templates","consult","gen","status","docgen"]);
 
 const navBtns=[...document.querySelectorAll(".navlinks button")];
 const panels=[...document.querySelectorAll(".panel")];
@@ -1908,6 +1981,318 @@ function dday(due){
      <td>${p.due||"—"}</td>
      <td><span class="badge st-${p.stage}">${p.stage}</span></td><td>${p.diff}</td></tr>`
   ).join("");
+})();
+</script>
+
+<script>
+/* ===================== 1차 상담 메일 (타사이전 상담 게시판 답변용) =====================
+   문구를 고치려면 아래 CT_TEMPLATES 의 글자만 수정하면 됩니다.
+   {{LINK:키|보이는 글자}} 형식이 링크 자리입니다. (키: pricing / core / demo)        */
+(function(){
+  const CT_SUBJECT = "[메이크샵] 솔루션 이전 문의 관련 안내 드립니다";
+
+  const CT_DEFAULT_LINKS = {
+    pricing: "https://www.makeshop.co.kr/newmakeshop/home/register-plan.html",
+    core:    "https://www.makeshop.co.kr/newmakeshop/home/core-service-info.html",
+    demo:    "https://www.makeshop.co.kr/newmakeshop/home/premiumlogin.html"
+  };
+
+  const CT_TEMPLATES = {
+
+/* ---------- 1. 임대형 / 독립몰에서 이전 ---------- */
+rental: `안녕하세요.
+메이크샵 오은비 매니저입니다.
+
+솔루션 이전 상담 문의에 감사의 말씀 드립니다.
+이전 검토에 참고하실 수 있도록 솔루션 이전에 필요한 기본적인 진행 절차 및 주요 안내 사항을 아래와 같이 전달드립니다.
+실제 이전 가능 범위 및 세부 작업 내용은 현재 쇼핑몰 환경과 이전을 희망하시는 범위를 확인한 후 보다 정확하게 안내드릴 수 있습니다.
+
+
+1. 이전 소요시간
+
+데이터 이전, 쇼핑몰 디자인 작업, PG 심사 및 도메인 이전 등의 과정을 거쳐 메이크샵에서 실제 쇼핑몰을 오픈하기까지 평균 약 4~6주 정도 소요됩니다.
+진행 과정에서 별도의 이슈나 추가 작업이 발생하지 않는다면 일정에 맞춰 원활한 오픈이 가능합니다.
+
+
+2. 메이크샵 요금제 및 이용 혜택
+
+메이크샵은 코어(Core)와 프리미엄(Premium), 총 2가지 요금제로 운영되고 있습니다.
+{{LINK:pricing|요금제 바로가기 클릭}}
+
+- 코어 요금제 : 1인 소규모 쇼핑몰 운영에 필요한 기본 기능을 제공하는 [무료] 요금제
+- 프리미엄 요금제 : 다양한 부가 기능과 확장된 쇼핑몰 운영 환경을 지원하는 [유료] 요금제
+
+현재 타 솔루션에서 메이크샵으로 이전하시는 고객님께는 프리미엄 요금제 1년 무상 이용 혜택을 제공하고 있습니다.
+쇼핑몰 오픈 시점에 맞춰 이용 기간을 1년 셋팅 해드리며, 1년 프리미엄 요금제 무상 이용 기간 종료 후에는 메이크샵 프리미엄 서비스 이용을 위해 프리미엄 요금제를 결제해 주셔야 합니다.
+단, 코어 요금제는 솔루션 이전 서비스 지원 대상에 해당하지 않으므로, 코어 요금제를 이용하실 경우 직접 쇼핑몰을 구축해 주셔야 합니다.
+코어 요금제에 대한 상세 내용은 아래의 링크에서 확인하실 수 있습니다.
+→ {{LINK:core|바로가기 클릭}}
+
+
+3. 데이터 관련
+
+기존 쇼핑몰에서 사용하던 주요 데이터는 대부분 무료로 이전하실 수 있습니다. (주요 이전 데이터 : 회원 / 상품 / 주문 / 게시판)
+다만, 각 데이터의 세부 항목값 및 기타 데이터의 이전 가능 여부는 실제 운영 중인 쇼핑몰의 데이터를 1차 검토한 후 구체적으로 안내해 드릴 수 있습니다.
+(ex. 상품 > 판매상태, 전시상태, 배송정보 등)
+
+
+4. 쇼핑몰 디자인 관련
+
+쇼핑몰 디자인은 메이크샵에서 제공하는 "무료 디자인 스킨을 활용한 기본 세팅" 또는 브랜드 콘셉트에 맞춘 "맞춤형 디자인" 제작 방식으로 진행하실 수 있습니다.
+
+1) 무료 스킨 기반 기본 세팅
+
+메이크샵에서는 약 200여 종의 다양한 무료 디자인 스킨을 제공하고 있습니다.
+원하시는 스킨을 1종 선택해 주시면 해당 스킨을 기반으로 로고 및 메인 배너 교체, 카테고리명 수정 등 기본적인 메인 페이지 세팅을 무상으로 지원해 드립니다.
+스킨은 관리자 페이지 [디자인 > 디자인 스킨 관리 > 디자인 스킨 추가] 메뉴에서 확인하실 수 있으며,
+아직 메이크샵에 가입하지 않으신 경우 '{{LINK:demo|메이크샵 체험하기◀ 클릭}}'을 통해서도 미리 확인하실 수 있습니다.
+
+※ 기본 세팅 범위를 초과하는 디자인 수정 및 별도 커스텀 작업은 추가 비용이 발생할 수 있습니다.
+※ 스킨 선택 시에는 반응형 스킨을 추천드립니다. PC, 태블릿, 모바일 등 다양한 기기 환경에 유연하게 대응할 수 있으며, 최근 출시된 스킨은 마이페이지 등 서브페이지의 디자인 완성도도 높은 편입니다.
+
+2) 브랜딩 기반 맞춤 디자인 제작
+
+브랜드 고유의 콘셉트와 아이덴티티를 쇼핑몰 전반에 반영하고자 하시는 경우 맞춤형 디자인 제작도 가능합니다.
+희망하시는 디자인 방향과 기획서, 참고 레퍼런스 사이트(URL) 등을 전달해 주시면 작업 범위를 검토한 후 디자인 시안 제작부터 퍼블리싱 및 개발까지 필요한 세부 견적을 안내해 드립니다.
+
+※ 맞춤 디자인은 쇼핑몰 전체를 별도로 기획하고 제작하는 방식으로, 무료 스킨 기반 기본 세팅에 비해 상대적으로 높은 제작 비용과 긴 작업 기간이 소요될 수 있습니다.
+
+
+----------------------
+
+상기 내용 확인 후 메이크샵으로의 이전을 실제로 진행하고자 하시는 경우, 아래 [이전 요청서]를 작성하여 본 메일로 회신해 주시기 바랍니다.
+회신해 주신 내용을 바탕으로 이전 전담 매니저를 배정하여 상세 상담부터 이전 진행까지 지원해 드리겠습니다.
+
+※ 아직 이전 진행 여부를 결정하지 않으신 경우에는 이전 요청서를 작성하지 않으셔도 됩니다.
+
+
+[이전 요청서]
+
+- 사이트 : 예) 운영 사이트 주소
+- 이용중인 솔루션 : 예) 카페24, 스마트스토어 등
+- 이전 희망 사유 : 예) 기능 개선, 비용 절감, 운영 편의성 등
+- 이전 희망 데이터 범위 : 예) 회원 / 상품 / 주문 / 게시판 등
+- 디자인 이전 방식 : 예) 메이크샵 무료 스킨 기반 세팅 또는 신규 디자인 구축
+- 희망 이전 일정 : 예) 12월 중 오픈 희망
+
+
+----------------------
+
+이 외에도 솔루션 이전과 관련하여 궁금하신 사항이 있으시면 본 메일로 편하게 문의해 주시기 바랍니다.
+감사합니다.
+
+오은비 드림`,
+
+/* ---------- 2. 스마트스토어에서 이전 ---------- */
+smart: `안녕하세요.
+메이크샵 오은비 매니저입니다.
+
+먼저 메이크샵에 관심을 가지고 문의해 주셔서 감사합니다.
+현재 운영 중이신 네이버 스마트스토어의 이전 및 자사몰 구축을 검토하시는 것으로 확인되어, 기본 절차와 주요 지원 사항을 안내드립니다.
+
+
+1. 자사몰 구축 소요 기간
+
+메이크샵 가입부터 상품 데이터 이전, 쇼핑몰 디자인 작업, PG 심사 및 도메인 연결까지 실제 자사몰 오픈까지 평균 약 4주 정도 소요됩니다.
+다만, 디자인 구축 범위와 PG 심사 일정, 도메인 준비 여부 등에 따라 소요 기간은 달라질 수 있습니다.
+
+
+2. 메이크샵 요금제 및 이용 혜택
+
+메이크샵은 코어(Core)와 프리미엄(Premium), 총 2가지 요금제로 운영되고 있습니다.
+{{LINK:pricing|요금제 바로가기 클릭}}
+
+- 코어 요금제 : 1인 소규모 쇼핑몰 운영에 필요한 기본 기능을 제공하는 [무료] 요금제
+- 프리미엄 요금제 : 다양한 부가 기능과 확장된 쇼핑몰 운영 환경을 지원하는 [유료] 요금제
+
+현재 타 솔루션에서 메이크샵으로 이전하시는 고객님께는 프리미엄 요금제 1년 무상 이용 혜택을 제공하고 있습니다.
+쇼핑몰 오픈 시점에 맞춰 이용 기간을 1년 셋팅 해드리며, 1년 프리미엄 요금제 무상 이용 기간 종료 후에는 메이크샵 프리미엄 서비스 이용을 위해 프리미엄 요금제를 결제해 주셔야 합니다.
+단, 코어 요금제는 솔루션 이전 서비스 지원 대상에 해당하지 않으므로, 코어 요금제를 이용하실 경우 직접 쇼핑몰을 구축해 주셔야 합니다.
+코어 요금제에 대한 상세 내용은 아래의 링크에서 확인하실 수 있습니다.
+→ {{LINK:core|바로가기 클릭}}
+
+
+3. 기존 스마트스토어 데이터 이전 지원 범위
+
+현재 운영 중이신 네이버 스마트스토어의 데이터 중 상품 및 리뷰 데이터를 메이크샵 자사몰로 이전해 드립니다. (무상 지원)
+
+1) 상품 데이터
+
+스마트스토어에 등록된 상품 데이터는 1회 이전을 지원하며, 네이버 정책에 따라 제공 가능한 데이터 범위 내에서 진행됩니다.
+단, 간편 옵션으로 등록된 상품은 옵션 정보가 이전되지 않으며, 이전 완료 후 상품 정보에 대한 별도 확인 및 검수가 필요합니다.
+
+2) 리뷰 데이터
+
+이전된 리뷰는 메이크샵에서 비회원이 작성한 게시글 형태로 등록됩니다.
+
+
+4. 자사몰 디자인 구축 방식
+
+메이크샵에서는 고객님의 운영 방향과 디자인 구축 범위에 따라 다음 두 가지 방식으로 자사몰을 구축하실 수 있습니다.
+
+1) 무료 스킨 기반 기본 세팅
+
+메이크샵에서는 약 200여 종의 무료 디자인 스킨을 제공하고 있습니다.
+제공되는 스킨 중 원하시는 디자인을 1종 선택하시면, 해당 스킨을 기반으로 메인 페이지의 기본 디자인 세팅을 무상으로 지원해 드립니다.
+(예. 로고, 메인 배너 교체, 카테고리명 수정, 메인 페이지 영역 기본 구성 및 세팅)
+
+스킨은 메이크샵 관리자 페이지의 [디자인 > 디자인 스킨 관리 > 디자인 스킨 추가] 메뉴에서 확인하실 수 있습니다.
+아직 메이크샵에 가입하지 않으셨다면 아래 체험하기 페이지에서도 디자인 스킨을 미리 확인하실 수 있습니다. ▶ {{LINK:demo|메이크샵 체험하기}}
+
+※ 기본 지원 범위 외에 별도 디자인 변경 및 커스터마이징 작업을 희망하시는 경우 작업 범위에 따라 추가 비용이 발생할 수 있습니다.
+※ 스킨 선택 시에는 PC, 태블릿, 모바일 등 다양한 기기에 최적화된 반응형 스킨을 추천드립니다.
+
+2) 브랜딩 디자인 구축 / 개발 (모든 페이지가 맞춤으로 작업되므로 고비용 발생)
+
+기존 디자인을 단순히 변경하는 것이 아니라 쇼핑몰 전체 분위기와 브랜드 콘셉트까지 새롭게 리뉴얼하고 싶으신 경우, 별도의 디자인 구축도 가능합니다.
+메이크샵을 통해 디자인 시안 제작부터 퍼블리싱까지 필요한 작업 범위에 따라 상담 및 견적을 받아보실 수 있습니다.
+
+
+----------------------
+
+상기 안내 사항을 확인하신 후 메이크샵을 통한 자사몰 구축을 실제로 진행하고자 하시는 경우, 아래 [자사몰 구축 요청서] 내용을 작성하여 본 메일로 회신해 주시기 바랍니다.
+회신해 주신 내용을 바탕으로 이전 전담 매니저를 배정하여 상세 상담 및 자사몰 구축 진행을 도와드리겠습니다.
+
+※ 아직 자사몰 구축 여부를 검토 중이시거나 이전을 결정하지 않으신 경우에는 요청서를 작성하지 않으셔도 됩니다.
+
+
+[자사몰 구축 요청서]
+
+- 운영 중인 스마트스토어 주소 : 현재 운영 중인 스마트스토어 URL
+- 자사몰 구축 희망 사유 : 브랜드 독립몰 운영, 판매 채널 확대, 회원 관리 및 마케팅 기능 활용 등
+- 희망 데이터 이전 범위 : 상품 / 리뷰
+- 디자인 구축 방식 : 메이크샵 무료 스킨 기반 세팅 / 신규 디자인 구축
+- 희망 오픈 일정 : 예) 12월 중 오픈 희망
+
+
+----------------------
+
+이외에도 솔루션 이전과 관련하여 궁금하신 사항이 있으시면 본 메일로 편하게 문의해 주시기 바랍니다.
+감사합니다.
+
+오은비 드림`
+  };
+
+  /* ---------- 동작 ---------- */
+  const CT_KEYS = ["pricing","core","demo"];
+  const CT_STORE = "hub-consult-links";
+  const bodyEl = document.getElementById("ctBody");
+  if(!bodyEl) return;
+  const subjEl = document.getElementById("ctSubj");
+  const copiedEl = document.getElementById("ctCopied");
+  const typeBtns = [...document.querySelectorAll(".ct-type")];
+  let ctCur = "rental";
+
+  function ctLinks(){
+    const o = {};
+    CT_KEYS.forEach(k => { o[k] = (document.getElementById("ctU-"+k).value || "").trim(); });
+    return o;
+  }
+  function ctSave(){
+    try{ localStorage.setItem(CT_STORE, JSON.stringify(ctLinks())); }catch(e){}
+    ctRender();
+  }
+  function ctLoad(){
+    let o = {};
+    try{ o = JSON.parse(localStorage.getItem(CT_STORE) || "{}"); }catch(e){}
+    CT_KEYS.forEach(k => {
+      document.getElementById("ctU-"+k).value =
+        (o[k] !== undefined && o[k] !== "") ? o[k] : CT_DEFAULT_LINKS[k];
+    });
+  }
+  function ctEsc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function ctPlain(tpl){ return tpl.replace(/\{\{LINK:[a-z]+\|([^}]*)\}\}/g, "$1"); }
+
+  function ctHtml(tpl, links, forView){
+    const out = [];
+    const re = /\{\{LINK:([a-z]+)\|([^}]*)\}\}/g;
+    let last = 0, m;
+    while((m = re.exec(tpl)) !== null){
+      out.push(ctEsc(tpl.slice(last, m.index)));
+      const url = links[m[1]], label = ctEsc(m[2]);
+      if(url) out.push('<a href="'+ctEsc(url)+'" target="_blank" rel="noopener">'+label+'</a>');
+      else if(forView) out.push('<a class="nolink" title="링크 주소가 설정되지 않았습니다">'+label+'</a>');
+      else out.push(label);
+      last = m.index + m[0].length;
+    }
+    out.push(ctEsc(tpl.slice(last)));
+    return out.join("");
+  }
+
+  function ctRender(){
+    bodyEl.innerHTML = ctHtml(CT_TEMPLATES[ctCur], ctLinks(), true);
+    typeBtns.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.ct === ctCur)));
+  }
+
+  function ctFlash(msg){
+    copiedEl.textContent = msg || "복사되었습니다";
+    copiedEl.classList.add("show");
+    clearTimeout(copiedEl._tm);
+    copiedEl._tm = setTimeout(() => copiedEl.classList.remove("show"), 1800);
+  }
+
+  async function ctWritePlain(text){
+    try{ await navigator.clipboard.writeText(text); return true; }catch(e){}
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try{ ok = document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  async function ctWriteRich(html, text){
+    try{
+      if(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write){
+        await navigator.clipboard.write([new ClipboardItem({
+          "text/html":  new Blob([html], {type:"text/html"}),
+          "text/plain": new Blob([text], {type:"text/plain"})
+        })]);
+        return true;
+      }
+    }catch(e){}
+    try{
+      const d = document.createElement("div");
+      d.innerHTML = html;
+      d.setAttribute("contenteditable","true");
+      d.style.position = "fixed"; d.style.left = "-9999px"; d.style.whiteSpace = "pre-wrap";
+      document.body.appendChild(d);
+      const r = document.createRange(); r.selectNodeContents(d);
+      const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      const ok = document.execCommand("copy");
+      s.removeAllRanges(); document.body.removeChild(d);
+      if(ok) return true;
+    }catch(e){}
+    return ctWritePlain(text);
+  }
+
+  typeBtns.forEach(b => b.addEventListener("click", () => {
+    ctCur = b.dataset.ct;
+    ctRender();
+  }));
+  CT_KEYS.forEach(k => document.getElementById("ctU-"+k).addEventListener("input", ctSave));
+  document.getElementById("ctResetLinks").addEventListener("click", () => {
+    CT_KEYS.forEach(k => { document.getElementById("ctU-"+k).value = CT_DEFAULT_LINKS[k]; });
+    ctSave();
+    ctFlash("기본 주소로 되돌렸습니다");
+  });
+  document.getElementById("ctCopyRich").addEventListener("click", async () => {
+    const tpl = CT_TEMPLATES[ctCur], text = ctPlain(tpl);
+    const html = '<div style="white-space:pre-wrap;font-family:\'Malgun Gothic\',\'맑은 고딕\',sans-serif;font-size:14px;line-height:1.7;">'
+               + ctHtml(tpl, ctLinks(), false) + '</div>';
+    ctFlash(await ctWriteRich(html, text) ? "본문을 복사했습니다 (링크 포함)" : "복사에 실패했습니다");
+  });
+  document.getElementById("ctCopyPlain").addEventListener("click", async () => {
+    ctFlash(await ctWritePlain(ctPlain(CT_TEMPLATES[ctCur])) ? "본문을 텍스트로 복사했습니다" : "복사에 실패했습니다");
+  });
+  document.getElementById("ctCopySubj").addEventListener("click", async () => {
+    ctFlash(await ctWritePlain(subjEl.value) ? "제목을 복사했습니다" : "복사에 실패했습니다");
+  });
+
+  subjEl.value = CT_SUBJECT;
+  ctLoad();
+  ctRender();
 })();
 </script>
 </body>
