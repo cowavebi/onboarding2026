@@ -564,7 +564,7 @@
           <option value="result">2단계 · 1차 데이터 이전 결과 안내서</option>
           <option value="final">3단계 · 최종데이터 이관 안내서</option>
         </select></div>
-        <p class="hint" id="dgManualNote" style="color:#DC2626;font-weight:600">※ 이전 항목·게시판·참고 사항은 자동으로 채워지지 않습니다. 고객사별로 다르므로 실제 결과를 직접 입력해 주세요.</p>
+        <p class="hint" id="dgManualNote" style="display:none;color:#1D4ED8;font-weight:600">※ 1차·최종 안내서에는 이전 항목을 입력하지 않습니다. 문서에 "이전 가능 항목과 동일합니다. 데이터 검토 결과 안내서를 참고해 주세요."로 표시됩니다.</p>
       </div>
 
       <div class="form-card" style="margin-bottom:18px">
@@ -1546,19 +1546,17 @@ const DG_DOCS={
          boards:"이전된 게시판", openDate:true, agreed:false},
 };
 const DG_ITEM_IDS=["dg_productItems","dg_boardItems","dg_memberItems","dg_orderItems"];
-// 아래 기본 문구는 '데이터 검토 결과 안내서'에서만 미리 채워 둡니다.
-// 1차 이전 결과·최종 이관 안내서에서는 실제 이전된 항목이 다를 수 있으므로 절대 자동으로 채우지 않고 직접 입력받습니다.
-const DG_ITEM_DEFAULTS={"dg_productItems": "분류, 상품명, 추가상품명, 판매가, 매입가, 재고, 판매여부, 진열여부, 대/중/소 이미지, 다중 이미지, 옵션, 옵션별 재고, 등록일, 수정일, 과세여부, 적립금, 적립금 사용 가능 여부, 쿠폰 사용 가능 여부, 상세설명, 정보고시, 검색어(해시태그)", "dg_boardItems": "제목, 내용, 카테고리, 작성자, 조회수, 공지사항 여부, 작성일, 첨부파일(이미지), 비밀글 여부, 노출 여부, 댓글, 연관 상품, 평점", "dg_memberItems": "적립금, 아이디, 이름, 이메일, 이메일 수신 여부, 핸드폰, 가입일, 최종 로그인 일자, 주소, 마케팅 동의 일자", "dg_orderItems": "주문상태, 주문자 정보(아이디, 이름, 전화번호, 휴대폰번호, IP), 결제금액, 배송비, 적립금 사용금액, 할인금액, 결제수단, 결제일, 주문일, 취소일, 취소사유, 수령자 정보(이름, 전화번호, 휴대폰번호, 우편번호, 주소), 배송업체, 송장번호, 배송일, 배송완료일, 배송메세지, 입금계좌 정보, 입금자명, 카드 승인번호, 주문 상품 정보(상품명, 옵션, 가격, 수량, 적립금)"};
+// 이전 항목은 소스에 기본값을 두지 않습니다. 검토 안내서에서만 붙여넣기·직접 입력으로 채웁니다.
+const DG_ITEM_REF="이전 가능 항목과 동일합니다. 데이터 검토 결과 안내서를 참고해 주세요.";
 DG_ITEM_IDS.forEach(id=>{const el=document.getElementById(id); if(!el) return;
-  el.dataset.src="default"; el.dataset.reviewVal=DG_ITEM_DEFAULTS[id]||"";
-  el.addEventListener("input",()=>{el.dataset.src="typed"; el.classList.toggle("dg-need", !el.value.trim());});});
+  el.addEventListener("input",()=>{el.classList.toggle("dg-need", !el.value.trim());});});
 function dgSyncItems(){
-  const manual=true;
+  const useItems = dgType()==="review";
   DG_ITEM_IDS.forEach(id=>{const el=document.getElementById(id); if(!el) return;
-    if(el.dataset.src!=="typed") el.value = manual ? "" : (el.dataset.reviewVal||"");
-    el.placeholder = manual ? "수기 입력 필요 — 실제로 이전된 항목을 직접 입력해 주세요 (자동으로 채워지지 않습니다)" : "";
-    el.classList.toggle("dg-need", manual && !el.value.trim());});
-  const note=document.getElementById("dgManualNote"); if(note) note.style.display = manual ? "" : "none";
+    const f=el.closest(".field"); if(f) f.style.display = useItems ? "" : "none";
+    el.placeholder = "붙여넣기로 채우거나 직접 입력해 주세요";
+    el.classList.toggle("dg-need", useItems && !el.value.trim());});
+  const note=document.getElementById("dgManualNote"); if(note) note.style.display = useItems ? "none" : "";
 }
 function dgType(){const s=document.getElementById("dgDocType");return (s&&DG_DOCS[s.value])?s.value:"review";}
 function dgSyncType(){
@@ -1579,11 +1577,14 @@ async function dgBuild(){
   msg.classList.remove("show");err.classList.remove("show");
   const need=document.getElementById("dgNeedMsg"); if(need) need.classList.remove("show");
   {
-    const SEC=[["dg_productCount","dg_productItems","상품"],["dg_boardCount","dg_boardItems","게시판"],["dg_boardCount","dg_boardTypes","게시판"],
-               ["dg_memberTotal","dg_memberItems","회원"],["dg_orderCount","dg_orderItems","주문"]];
+    const SEC = dgType()==="review"
+      ? [["dg_productCount","dg_productItems","상품"],["dg_boardCount","dg_boardItems","게시판"],
+         ["dg_boardCount","dg_boardTypes","게시판"],["dg_memberTotal","dg_memberItems","회원"],
+         ["dg_orderCount","dg_orderItems","주문"]]
+      : [["dg_boardCount","dg_boardTypes","게시판"]];
     const miss=SEC.filter(([c,i])=>dgVal(c)&&!dgVal(i));
     if(miss.length){
-      need.textContent=`${[...new Set(miss.map(m=>m[2]))].join("·")}의 '${DG_DOCS[dgType()].items}' 항목을 직접 입력해 주세요.`;
+      need.textContent=`${[...new Set(miss.map(m=>m[2]))].join("·")} 항목을 입력해 주세요.`;
       need.classList.add("show"); setTimeout(()=>need.classList.remove("show"),6000);
       document.getElementById(miss[0][1]).focus(); return;
     }
@@ -1602,19 +1603,19 @@ async function dgBuild(){
       docDate: dgVal("dg_docDate")||"[날짜]",
       openDate: dgVal("dg_openDate")||"[오픈 예정일]",
       productCount: dgVal("dg_productCount")||"[ ]",
-      productItems: dgVal("dg_productItems"),
+      productItems: dgType()==="review" ? dgVal("dg_productItems") : DG_ITEM_REF,
       productNotes: dgLines("dg_productNotes"),
       boardCount: dgVal("dg_boardCount")||"[ ]",
       boardTypes: dgVal("dg_boardTypes"),
-      boardItems: dgVal("dg_boardItems"),
+      boardItems: dgType()==="review" ? dgVal("dg_boardItems") : DG_ITEM_REF,
       boardNotes: dgLines("dg_boardNotes"),
       memberTotal: dgVal("dg_memberTotal")||"[ ]",
       memberNormal: dgVal("dg_memberNormal")||"[ ]",
       memberDormant: dgVal("dg_memberDormant")||"[ ]",
-      memberItems: dgVal("dg_memberItems"),
+      memberItems: dgType()==="review" ? dgVal("dg_memberItems") : DG_ITEM_REF,
       memberNotes: dgLines("dg_memberNotes"),
       orderCount: dgVal("dg_orderCount")||"[ ]",
-      orderItems: dgVal("dg_orderItems"),
+      orderItems: dgType()==="review" ? dgVal("dg_orderItems") : DG_ITEM_REF,
       orderNotes: dgLines("dg_orderNotes"),
     };
     // 배너의 수량 문구는 통째로 만들어 넣는다. 값이 없으면 빈 문자열이 들어가
@@ -1745,26 +1746,26 @@ function dgParseAndFill(){
   const raw = document.getElementById("dgRaw").value || "";
   if(!raw.trim()) return;
   const data = dgParseDbText(raw);
-  const manual = true;   // 이전 항목은 어떤 문서 유형에서도 자동 입력 금지
+  const useItems = dgType()==="review";   // 이전 항목은 검토 안내서에서만 채웁니다
   dgSetVal("dg_productCount", data.productCount);
-  if(!manual) dgSetItems("dg_productItems", data.productItems);
+  if(useItems) dgSetItems("dg_productItems", data.productItems);
   dgSetNotes("dg_productNotes", data.productNotes);
   dgSetVal("dg_boardCount", data.boardCount);
   dgSetVal("dg_boardTypes", data.boardTypes);
-  if(!manual) dgSetItems("dg_boardItems", data.boardItems);
+  if(useItems) dgSetItems("dg_boardItems", data.boardItems);
   dgSetNotes("dg_boardNotes", data.boardNotes);
   dgSetVal("dg_memberTotal", data.memberTotal);
   dgSetVal("dg_memberNormal", data.memberNormal);
   dgSetVal("dg_memberDormant", data.memberDormant);
-  if(!manual) dgSetItems("dg_memberItems", data.memberItems);
+  if(useItems) dgSetItems("dg_memberItems", data.memberItems);
   dgSetNotes("dg_memberNotes", data.memberNotes);
   dgSetVal("dg_orderCount", data.orderCount);
-  if(!manual) dgSetItems("dg_orderItems", data.orderItems);
+  if(useItems) dgSetItems("dg_orderItems", data.orderItems);
   dgSetNotes("dg_orderNotes", data.orderNotes);
   dgSetNotes("dg_legacyNotes", data.legacyNotes);
   dgSetNotes("dg_couponNotes", data.couponNotes);
   const msg=document.getElementById("dgParseMsg");
-  if(msg){ msg.textContent = manual ? "자동으로 채웠습니다 — 이전 결과 항목은 수기 입력이 필요합니다" : "아래 항목에 자동으로 채웠습니다 — 내려받기 전에 확인해 주세요";
+  if(msg){ msg.textContent = "아래 항목에 자동으로 채웠습니다 — 내려받기 전에 확인해 주세요";
     msg.classList.add("show"); setTimeout(()=>msg.classList.remove("show"),3000); }
 }
 const dgParseBtn=document.getElementById("dgParseBtn");
