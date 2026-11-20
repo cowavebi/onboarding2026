@@ -449,9 +449,9 @@
     <div class="brand"><span class="mk">M</span> 메이크샵 이관 문서 허브</div>
     <div class="navlinks">
       <button class="active" data-p="home">개요</button>
-      <button data-p="templates">양식 자료실</button>
-      <button data-p="consult">1차 상담 메일</button>
-      <button data-p="gen">안내 메일 생성</button>
+      <button data-p="consult">메일 템플릿 (이전 확정 전)</button>
+      <button data-p="gen">메일 템플릿 (이전 확정 후)</button>
+      <button data-p="templates">자료실</button>
       <button data-p="docgen">양식 자동 채우기</button>
       <button data-p="status">프로젝트 현황</button>
       <button data-p="faq">FAQ</button>
@@ -473,7 +473,7 @@
         <h1>이관 전 과정을 한 곳에서.</h1>
         <p class="lead">타사 솔루션에서 메이크샵으로 이전하는 고객사 온보딩에 필요한 공통 양식과 단계별 안내 메일을 표준화했습니다. 착수 인사부터 오픈 후 안정화까지, 어느 PM이 진행해도 같은 품질로 안내할 수 있도록 만들었습니다.</p>
         <div class="quick">
-          <button class="qbtn" data-goto="gen">안내 메일 생성하기</button>
+          <button class="qbtn" data-goto="gen">메일 템플릿 (이전 확정 후)</button>
           <button class="qbtn sec" data-goto="templates">양식 내려받기</button>
         </div>
       </div>
@@ -492,7 +492,7 @@
     <div class="wrap">
       <div class="section-head" style="margin-top:44px">
         <div class="k">TEMPLATES</div>
-        <h2>양식 자료실</h2>
+        <h2>자료실</h2>
         <p>팀 공통 서식입니다. 원본을 그대로 두고 복사본으로 작성하며, 파일명은 구분_몰이름_날짜 규칙을 따라 주세요. 데이터 안내서 3종은 단계별로 색과 머리말이 구분되어 있으며, [양식 자동 채우기] 탭에서 자동으로 채워 받을 수 있습니다.</p>
       </div>
       <div class="grid-cards" id="tplCards"></div>
@@ -543,7 +543,7 @@
     <div class="wrap">
       <div class="section-head" style="margin-top:44px">
         <div class="k">FIRST CONTACT</div>
-        <h2>1차 상담 메일</h2>
+        <h2>메일 템플릿 (이전 확정 전)</h2>
         <p>타사이전 상담 게시판에 접수된 문의에 답변하는 1차 상담 메일입니다. 고객 문의 유형을 고르면 제목과 본문이 바로 완성됩니다. <b>본문 복사 (링크 포함)</b>로 복사하면 요금제·체험하기 링크가 걸린 채 네이버웍스 메일에 붙여넣어집니다.</p>
       </div>
 
@@ -590,7 +590,7 @@
     <div class="wrap">
       <div class="section-head" style="margin-top:44px">
         <div class="k">MAIL BUILDER</div>
-        <h2>안내 메일 생성</h2>
+        <h2>메일 템플릿 (이전 확정 후)</h2>
         <p>이관 단계를 고르고 몰 정보를 입력하면 발송용 메일 문구가 완성됩니다. 실제 발송 메일을 표준화한 문안이며, 빈 칸은 대괄호로 남아 발송 전에 채우면 됩니다.</p>
       </div>
       <div class="gen-top">
@@ -1156,7 +1156,7 @@ https://www.makeshop.co.kr/newmakeshop/home/mlogin.html?action_mode=write&return
     id: "design_guide",
     tab: "⑥ 운영 가이드 전달",
     title: "디자인 확정 · 사이트 운영 가이드 전달",
-    desc: "디자인 컨펌 완료 후, 상점에서 직접 메인페이지를 운영할 수 있도록 운영 가이드와 배너교체 요청서를 전달하는 메일. 첨부 파일은 양식 자료실의 디자인 운영 가이드에서 스킨별로 받으세요.",
+    desc: "디자인 컨펌 완료 후, 상점에서 직접 메인페이지를 운영할 수 있도록 운영 가이드와 배너교체 요청서를 전달하는 메일. 첨부 파일은 자료실의 디자인 운영 가이드에서 스킨별로 받으세요.",
     subject: "[메이크샵] {{mall}} 디자인 세팅 완료 및 사이트 운영 가이드 전달",
     fields: ["mall","person","pm","skin"],
     body:
@@ -1481,9 +1481,9 @@ FILES.forEach(f=>{
 const GATE_HASH = "71c4e06ece01af111978ac1b4d3e76d6a583a99b1a64f1dd5af8fe219abab4ba";
 const GATE_KEY = "hub-gate-auth";
 const GATE_LABELS = {
-  templates: {title:"양식 자료실", desc:"이 기능은 팀 내부 자료를 다루므로 비밀번호가 필요합니다."},
-  consult:   {title:"1차 상담 메일", desc:"메일 템플릿을 사용하려면 비밀번호가 필요합니다."},
-  gen:       {title:"안내 메일 생성", desc:"메일 템플릿을 사용하려면 비밀번호가 필요합니다."},
+  templates: {title:"자료실", desc:"이 기능은 팀 내부 자료를 다루므로 비밀번호가 필요합니다."},
+  consult:   {title:"메일 템플릿 (이전 확정 전)", desc:"메일 템플릿을 사용하려면 비밀번호가 필요합니다."},
+  gen:       {title:"메일 템플릿 (이전 확정 후)", desc:"메일 템플릿을 사용하려면 비밀번호가 필요합니다."},
   status:    {title:"프로젝트 현황", desc:"프로젝트 정보 확인에 비밀번호가 필요합니다."},
   download:  {title:"자료 다운로드", desc:"양식 자료를 내려받으려면 비밀번호가 필요합니다."}
 };
