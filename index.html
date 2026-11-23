@@ -579,7 +579,6 @@
         <p class="hint">본문에 링크로 들어가는 주소입니다. 수정하면 이 브라우저에 저장됩니다. 비우면 해당 문구는 링크 없이 글자만 복사됩니다(본문에서 점선 밑줄로 표시).</p>
         <div class="ct-links">
           <div class="ct-lrow"><label for="ctU-pricing">요금제 안내</label><input type="url" id="ctU-pricing" placeholder="https://..."></div>
-          <div class="ct-lrow"><label for="ctU-core">코어 요금제 상세</label><input type="url" id="ctU-core" placeholder="https://..."></div>
           <div class="ct-lrow"><label for="ctU-demo">메이크샵 체험하기</label><input type="url" id="ctU-demo" placeholder="https://..."></div>
         </div>
         <div class="out-actions"><button class="btn ghost" id="ctResetLinks" type="button">기본 주소로 되돌리기</button></div>
@@ -1988,13 +1987,12 @@ function dday(due){
 <script>
 /* ===================== 1차 상담 메일 (타사이전 상담 게시판 답변용) =====================
    문구를 고치려면 아래 CT_TEMPLATES 의 글자만 수정하면 됩니다.
-   {{LINK:키|보이는 글자}} 형식이 링크 자리입니다. (키: pricing / core / demo)        */
+   {{LINK:키|보이는 글자}} 형식이 링크 자리입니다. (키: pricing / demo)        */
 (function(){
   const CT_SUBJECT = "[메이크샵] 솔루션 이전 문의 관련 안내 드립니다";
 
   const CT_DEFAULT_LINKS = {
     pricing: "https://www.makeshop.co.kr/newmakeshop/home/register-plan.html",
-    core:    "https://www.makeshop.co.kr/newmakeshop/home/core-service-info.html",
     demo:    "https://www.makeshop.co.kr/newmakeshop/home/premiumlogin.html"
   };
 
@@ -2018,16 +2016,15 @@ rental: `안녕하세요.
 2. 메이크샵 요금제 및 이용 혜택
 
 메이크샵은 코어(Core)와 프리미엄(Premium), 총 2가지 요금제로 운영되고 있습니다.
-{{LINK:pricing|요금제 바로가기 클릭}}
 
 - 코어 요금제 : 1인 소규모 쇼핑몰 운영에 필요한 기본 기능을 제공하는 [무료] 요금제
 - 프리미엄 요금제 : 다양한 부가 기능과 확장된 쇼핑몰 운영 환경을 지원하는 [유료] 요금제
+{{LINK:pricing|메이크샵 요금제 자세히 보기}}
 
-현재 타 솔루션에서 메이크샵으로 이전하시는 고객님께는 프리미엄 요금제 1년 무상 이용 혜택을 제공하고 있습니다.
-쇼핑몰 오픈 시점에 맞춰 이용 기간을 1년 셋팅 해드리며, 1년 프리미엄 요금제 무상 이용 기간 종료 후에는 메이크샵 프리미엄 서비스 이용을 위해 프리미엄 요금제를 결제해 주셔야 합니다.
-단, 코어 요금제는 솔루션 이전 서비스 지원 대상에 해당하지 않으므로, 코어 요금제를 이용하실 경우 직접 쇼핑몰을 구축해 주셔야 합니다.
-코어 요금제에 대한 상세 내용은 아래의 링크에서 확인하실 수 있습니다.
-→ {{LINK:core|바로가기 클릭}}
+이전팀에서는 프리미엄 요금제를 기준으로 쇼핑몰 이전을 지원하고 있으며, 코어 요금제는 이전 지원 대상에 해당하지 않아 직접 쇼핑몰을 구축해 주셔야 합니다.
+
+현재 메이크샵으로 이전하시는 고객님께는 프리미엄 요금제 12개월 무료 이용 혜택을 제공하고 있습니다.
+무료 이용 기간은 쇼핑몰 오픈 시점에 맞춰 적용되며, 12개월 종료 후에는 서비스를 계속 이용하시려면 별도 결제가 필요합니다.
 
 
 3. 데이터 관련
@@ -2101,16 +2098,15 @@ smart: `안녕하세요.
 2. 메이크샵 요금제 및 이용 혜택
 
 메이크샵은 코어(Core)와 프리미엄(Premium), 총 2가지 요금제로 운영되고 있습니다.
-{{LINK:pricing|요금제 바로가기 클릭}}
 
 - 코어 요금제 : 1인 소규모 쇼핑몰 운영에 필요한 기본 기능을 제공하는 [무료] 요금제
 - 프리미엄 요금제 : 다양한 부가 기능과 확장된 쇼핑몰 운영 환경을 지원하는 [유료] 요금제
+{{LINK:pricing|메이크샵 요금제 자세히 보기}}
 
-현재 타 솔루션에서 메이크샵으로 이전하시는 고객님께는 프리미엄 요금제 1년 무상 이용 혜택을 제공하고 있습니다.
-쇼핑몰 오픈 시점에 맞춰 이용 기간을 1년 셋팅 해드리며, 1년 프리미엄 요금제 무상 이용 기간 종료 후에는 메이크샵 프리미엄 서비스 이용을 위해 프리미엄 요금제를 결제해 주셔야 합니다.
-단, 코어 요금제는 솔루션 이전 서비스 지원 대상에 해당하지 않으므로, 코어 요금제를 이용하실 경우 직접 쇼핑몰을 구축해 주셔야 합니다.
-코어 요금제에 대한 상세 내용은 아래의 링크에서 확인하실 수 있습니다.
-→ {{LINK:core|바로가기 클릭}}
+이전팀에서는 프리미엄 요금제를 기준으로 쇼핑몰 이전을 지원하고 있으며, 코어 요금제는 이전 지원 대상에 해당하지 않아 직접 쇼핑몰을 구축해 주셔야 합니다.
+
+현재 메이크샵으로 이전하시는 고객님께는 프리미엄 요금제 12개월 무료 이용 혜택을 제공하고 있습니다.
+무료 이용 기간은 쇼핑몰 오픈 시점에 맞춰 적용되며, 12개월 종료 후에는 서비스를 계속 이용하시려면 별도 결제가 필요합니다.
 
 
 3. 기존 스마트스토어 데이터 이전 지원 범위
@@ -2175,7 +2171,7 @@ smart: `안녕하세요.
   };
 
   /* ---------- 동작 ---------- */
-  const CT_KEYS = ["pricing","core","demo"];
+  const CT_KEYS = ["pricing","demo"];
   const CT_STORE = "hub-consult-links";
   const bodyEl = document.getElementById("ctBody");
   if(!bodyEl) return;
