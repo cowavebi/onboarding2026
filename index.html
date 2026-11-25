@@ -382,7 +382,7 @@
     <div class="lockicon">🔒</div>
     <h2>팀 전용 페이지</h2>
     <p>메이크샵 이관 문서 허브는 팀 내부용입니다.<br>비밀번호를 입력해 주세요.</p>
-    <p style="margin-top:-12px;font-size:12px">비밀번호는 오은비에게 문의 주세요.</p>
+    <p style="margin-top:-12px;font-size:12px">비밀번호 : 팀이름(영문) + 팀 인원수</p>
     <input type="password" id="lockPw" placeholder="비밀번호" autocomplete="off">
     <button id="lockBtn">확인</button>
     <div class="lockerr" id="lockErr">비밀번호가 올바르지 않습니다.</div>
@@ -407,7 +407,7 @@
   // 아래는 비밀번호 '원문'을 소스에 노출하지 않기 위한 최소한의 장치(SHA-256 해시)입니다.
   // 비밀번호 변경 방법: 새 비밀번호의 SHA-256 해시값을 구해 PASSWORD_HASH 에 넣으세요.
   //   (예: 온라인 'SHA-256 generator'에 새 비밀번호를 입력하면 해시값이 나옵니다)
-  var PASSWORD_HASH = "b3502377172d7d1b5794d3e25bc38582af83e938558489cafb8e963deeb36ec3";
+  var PASSWORD_HASH = "fa77756d5d20e2e556056b7df87cb86f6099f4c8af8bdc59e4ea937e12013f1a";
   // ── 메인 페이지 잠금 ────────────────────────────────────
   // 비밀번호는 사이트에 처음 들어올 때 한 번만 묻고, 이후에는 이 브라우저에 기억됩니다.
   // 탭별 비밀번호는 사용하지 않습니다(GATED_PAGES 비움).
@@ -1478,7 +1478,7 @@ FILES.forEach(f=>{
 
 
 /* ================= 액션 게이트 (한 번 인증하면 세 기능 모두 해제) ================= */
-const GATE_HASH = "b3502377172d7d1b5794d3e25bc38582af83e938558489cafb8e963deeb36ec3";
+const GATE_HASH = "fa77756d5d20e2e556056b7df87cb86f6099f4c8af8bdc59e4ea937e12013f1a";
 const GATE_KEY = "hub-gate-auth";
 const GATE_LABELS = {
   templates: {title:"자료실", desc:"이 기능은 팀 내부 자료를 다루므로 비밀번호가 필요합니다."},
